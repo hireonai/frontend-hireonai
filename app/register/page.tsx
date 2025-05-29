@@ -9,11 +9,11 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Sidebar */}
-      <div className="hidden lg:flex lg:w-1/2 bg-[#4A90A4] flex-col justify-center items-center text-white p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-r from-[#163756] via-[#202838] via-[#3E98A1] to-[#163756] text-white flex-col justify-center items-center text-white p-12">
         <div className="max-w-md text-center">
           <div className="flex items-center justify-center space-x-2 mb-8">
             <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-[#4A90A4] font-bold text-xl">H</span>
+              <img src="/hireon-logo.png" alt="HireOn.AI Logo" className="w-8 h-8" />
             </div>
             <span className="text-3xl font-bold">HireOn.AI</span>
           </div>
@@ -58,7 +58,7 @@ export default function RegisterPage() {
                 <Input id="password" type="password" placeholder="Create a password" className="h-12" />
               </div>
 
-              <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white">Register</Button>
+              <Button className="w-full h-12 bg-[#163756] hover:bg-white hover:text-[#163756] text-white">Register</Button>
             </form>
 
             <div className="relative">

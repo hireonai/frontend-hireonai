@@ -39,16 +39,16 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 py-4">
+      <header className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-[#4A90A4] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">H</span>
-              </div>
+              <img src="/hireon-logo.png" alt="hireon-logo" className="h-8 w-auto align-middle" />
               <span className="text-xl font-bold text-gray-900">HireOn.AI</span>
             </Link>
+          </div>
 
+          <div className="flex-grow flex justify-center">
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/" className="text-gray-700 hover:text-[#4A90A4]">
                 Home
@@ -87,7 +87,7 @@ export default function DashboardPage() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Page Header */}
-        <div className="mb-8">
+        <div className="flex flex-col items-center text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Job Match Dashboard</h1>
           <p className="text-gray-600">Discover personalized job opportunities with our AI-powered scoring system</p>
         </div>
@@ -132,7 +132,7 @@ export default function DashboardPage() {
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                     <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                     <p className="text-sm text-gray-600 mb-2">Drag & drop your CV here</p>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="bg-[#163B56] text-white hover:bg-white hover:text-[#163B56]">
                       Browse Files
                     </Button>
                   </div>
