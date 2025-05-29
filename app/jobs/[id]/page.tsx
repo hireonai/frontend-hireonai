@@ -10,13 +10,11 @@ export default function JobDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 py-4">
+      <header className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[#4A90A4] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">H</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">HireOn.AI</span>
+          <img src="/hireon-logo.png" alt="hireon Logo" className="h-8 w-auto align-middle" />
+          <span className="text-xl font-bold text-gray-900">HireOn.AI</span>
           </Link>
 
           <div className="flex items-center space-x-4">
@@ -182,7 +180,7 @@ export default function JobDetailPage() {
                 <p className="text-sm text-gray-600 mb-4">
                   Generate a personalized cover letter for this position using AI.
                 </p>
-                <Button className="w-full bg-[#FF8A50] hover:bg-[#FF8A50]/90">Generate Cover Letter</Button>
+                <Button className="w-full bg-[#B01FCE] hover:bg-white/90 hover:text-[#B01FCE]">Generate Cover Letter</Button>
               </CardContent>
             </Card>
 

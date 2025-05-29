@@ -7,12 +7,10 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="border-b border-gray-200 px-4 py-4">
+      <nav className="border-b border-gray-200 px-4 py-4 sticky top-0 z-50 bg-white">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[#4A90A4] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">H</span>
-            </div>
+            <img src="/hireon-logo.png" alt="hireon Logo" className="h-8 w-auto align-middle" />
             <span className="text-xl font-bold text-gray-900">HireOn.AI</span>
           </div>
 
@@ -35,14 +33,14 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Link href="/register">
-              <Button className="bg-[#4A90A4] hover:bg-[#4A90A4]/90 text-white">Register</Button>
+              <Button variant="outline" className="border-[#4A90A4] text-white bg-[#4A90A4] hover:bg-white hover:text-[#4A90A4]">Register</Button>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-[#4A90A4] text-white py-20">
+      <section className="bg-gradient-to-r from-[#163756] via-[#202838] via-[#3E98A1] to-[#163756] text-white py-20">
         <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Your Personal Assistant for Job Hunting</h1>
@@ -51,27 +49,21 @@ export default function LandingPage() {
               accelerate your job search.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-white text-[#4A90A4] hover:bg-gray-100">
-                Learn More
-              </Button>
               <Link href="/register">
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-[#4A90A4]"
+                  className="bg-[#4A90A4] text-white hover:bg-white hover:text-[#4A90A4]"
                 >
                   Get Started
                 </Button>
               </Link>
+              <Button size="lg" className="bg-white text-[#4A90A4] hover:bg-[#163756] hover:text-white">
+                Learn More
+              </Button>
             </div>
           </div>
-          <div className="flex justify-center">
-            <div className="relative">
-              <div className="w-64 h-64 bg-white/10 rounded-lg flex items-center justify-center">
-                <FileText className="w-24 h-24 text-white" />
-                <CheckCircle className="w-12 h-12 text-green-400 absolute -top-2 -right-2" />
-              </div>
-            </div>
+          <div className="flex justify-end">
+            <img src="/hero-removebg.png" alt="Hero Image" className="w-full max-w-xl h-auto" />
           </div>
         </div>
       </section>
@@ -238,8 +230,8 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-[#4A90A4] rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">H</span>
+                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                  <img src="/hireon-logo.png" alt="HireOn.AI Logo" className="w-8 h-8" />
                 </div>
                 <span className="text-xl font-bold">HireOn.AI</span>
               </div>

@@ -10,16 +10,17 @@ export default function CVAnalysisResultsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 py-4">
+      <header className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-[#4A90A4] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">H</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">HireOn.AI</span>
+            <img src="/hireon-logo.png" alt="hireon Logo" className="h-8 w-auto align-middle" />
+            <span className="text-xl font-bold text-gray-900">HireOn.AI</span>
             </Link>
+          </div>
 
+          {/* Added a div to wrap the nav menu and give it flex-grow to take available space */}
+          <div className="flex-grow flex justify-center">
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/" className="text-gray-700 hover:text-[#4A90A4]">
                 Home
@@ -77,7 +78,7 @@ export default function CVAnalysisResultsPage() {
                       <span className="text-4xl font-bold text-[#4A90A4]">78%</span>
                       <span className="text-sm text-gray-600">Overall Score</span>
                       <Badge variant="secondary" className="mt-2">
-                        Needs Work
+                        Match
                       </Badge>
                     </div>
                   </div>
