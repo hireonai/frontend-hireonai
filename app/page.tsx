@@ -1,310 +1,627 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, FileText, Euro, Users, Github, Youtube, Linkedin } from "lucide-react"
+import { CheckCircle, FileText, Euro, Users, Github, Youtube, Linkedin, Sparkles, Star, Zap } from "lucide-react"
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Navigation */}
-      <nav className="border-b border-gray-200 px-4 py-4 sticky top-0 z-50 bg-white">
+      <nav className="border-b border-gray-200/50 px-4 py-4 fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/90 transition-all duration-500 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img src="/hireon-logo.png" alt="hireon Logo" className="h-8 w-auto align-middle" />
-            <span className="text-xl font-bold text-gray-900">HireOn.AI</span>
+            <Link href="/" className="flex items-center space-x-2 group">
+              <div className="relative">
+                <img src="/hireon-logo.png" alt="hireon Logo" className="h-8 w-auto align-middle transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 drop-shadow-lg" />
+                <div className="absolute -inset-2 bg-gradient-to-r from-[#4A90A4]/20 to-[#FF8A50]/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 via-[#4A90A4] to-gray-900 bg-clip-text text-transparent transition-all duration-500 group-hover:scale-105">
+                HireOn.AI
+              </span>
+            </Link>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-[#4A90A4]">
+            <Link href="/" className="text-gray-700 hover:text-[#4A90A4] transition-all duration-300 relative group font-medium">
               Home
+              <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
+              <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
             </Link>
-            <Link href="#features" className="text-gray-700 hover:text-[#4A90A4]">
+            <Link href="#features" className="text-gray-700 hover:text-[#4A90A4] transition-all duration-300 relative group font-medium">
               Features
+              <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
+              <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
             </Link>
-            <Link href="#how-it-works" className="text-gray-700 hover:text-[#4A90A4]">
+            <Link href="#how-it-works" className="text-gray-700 hover:text-[#4A90A4] transition-all duration-300 relative group font-medium">
               How it Works
+              <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
+              <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
             </Link>
           </div>
 
           <div className="flex items-center space-x-4">
             <Link href="/login">
-              <Button variant="outline" className="border-[#4A90A4] text-[#4A90A4] hover:bg-[#4A90A4] hover:text-white">
+              <Button variant="outline" className="border-2 border-[#4A90A4] text-[#4A90A4] hover:bg-[#4A90A4] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-[#4A90A4]/25 backdrop-blur-sm font-semibold">
                 Login
               </Button>
             </Link>
             <Link href="/register">
-              <Button variant="outline" className="border-[#4A90A4] text-white bg-[#4A90A4] hover:bg-white hover:text-[#4A90A4]">Register</Button>
+              <Button className="bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] text-white hover:from-[#FF8A50] hover:to-[#4A90A4] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-[#4A90A4]/30 font-semibold relative overflow-hidden group">
+                <span className="relative z-10">Register</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+              </Button>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#163756] via-[#202838] via-[#3E98A1] to-[#163756] text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Your Personal Assistant for Job Hunting</h1>
-            <p className="text-xl mb-8 text-teal-100">
-              Get AI-powered CV analysis, personalized job recommendations, and comprehensive career tracking tools to
-              accelerate your job search.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+      <section className="relative bg-gradient-to-br from-[#163756] via-[#202838] via-[#3E98A1] to-[#163756] text-white py-20 overflow-hidden mt-20">
+        {/* Animated Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-teal-600/30 animate-pulse"></div>
+          <div className="absolute top-10 left-10 w-72 h-72 bg-[#4A90A4]/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-10 right-10 w-72 h-72 bg-[#FF8A50]/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute bottom-10 left-1/2 w-72 h-72 bg-purple-400/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+          <div className="absolute top-1/2 right-20 w-48 h-48 bg-yellow-400/15 rounded-full mix-blend-multiply filter blur-2xl animate-blob animation-delay-1000"></div>
+          <div className="absolute bottom-20 right-1/3 w-56 h-56 bg-green-400/15 rounded-full mix-blend-multiply filter blur-2xl animate-blob animation-delay-3000"></div>
+          
+          {/* Additional Gradient Overlays */}
+          <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-[#4A90A4]/10 to-transparent animate-pulse animation-delay-1000"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#FF8A50]/10 to-transparent animate-pulse animation-delay-2000"></div>
+        </div>
+
+        {/* Floating particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white/30 rounded-full animate-float"></div>
+          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-white/40 rounded-full animate-float animation-delay-2000"></div>
+          <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-white/20 rounded-full animate-float animation-delay-4000"></div>
+          <div className="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-white/35 rounded-full animate-float animation-delay-6000"></div>
+          <div className="absolute top-3/4 left-1/2 w-2 h-2 bg-yellow-300/30 rounded-full animate-float animation-delay-1000"></div>
+          <div className="absolute top-1/6 right-1/2 w-1 h-1 bg-[#FF8A50]/40 rounded-full animate-float animation-delay-3000"></div>
+          <div className="absolute bottom-1/3 right-1/6 w-2.5 h-2.5 bg-[#4A90A4]/25 rounded-full animate-float animation-delay-5000"></div>
+          
+          {/* Additional Geometric Shapes */}
+          <div className="absolute top-20 left-20 w-6 h-6 border border-white/20 rotate-45 animate-spin" style={{ animationDuration: '8s' }}></div>
+          <div className="absolute bottom-32 right-32 w-4 h-4 border border-[#FF8A50]/30 animate-spin" style={{ animationDuration: '6s', animationDirection: 'reverse' }}></div>
+          <div className="absolute top-1/2 left-12 w-5 h-5 border border-[#4A90A4]/25 rotate-45 animate-pulse"></div>
+          
+          {/* Floating Text Elements */}
+          <div className="absolute top-16 right-1/3 text-white/10 text-xs animate-float animation-delay-2000 rotate-12">AI</div>
+          <div className="absolute bottom-20 left-1/4 text-white/10 text-xs animate-float animation-delay-4000 -rotate-12">SMART</div>
+          <div className="absolute top-1/3 left-1/6 text-white/10 text-xs animate-float animation-delay-3000 rotate-45">CV</div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center relative z-10">
+          <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1200">
+            <div className="space-y-6">
+              <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 animate-in fade-in slide-in-from-left-4 duration-1000 delay-300">
+                <Sparkles className="w-4 h-4 text-yellow-300 animate-pulse" />
+                <span className="text-sm font-medium text-white/90">AI-Powered Job Hunting Assistant</span>
+              </div>
+              
+              <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+                <span className="block animate-in fade-in slide-in-from-left-4 duration-1000 delay-500">Your Personal</span>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-blue-200 to-purple-200 flip-text">
+                Assistant
+                </span>
+                <span className="block animate-in fade-in slide-in-from-left-4 duration-1000 delay-900">
+                  for{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-orange-200 inline-block transform hover:scale-110 transition-transform duration-500">
+                    Job Hunting
+                  </span>
+                </span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-teal-100/90 leading-relaxed animate-in fade-in slide-in-from-left-4 duration-1000 delay-1100 max-w-2xl">
+                Get AI-powered CV analysis, personalized job recommendations, and comprehensive career tracking tools to 
+                <span className="font-semibold text-yellow-200"> accelerate your job search.</span>
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-6 animate-in fade-in slide-in-from-left-4 duration-1000 delay-1300">
               <Link href="/register">
                 <Button
                   size="lg"
-                  className="bg-[#4A90A4] text-white hover:bg-white hover:text-[#4A90A4]"
+                  className="group bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] text-white hover:from-[#FF8A50] hover:to-[#4A90A4] transition-all duration-700 hover:scale-110 hover:shadow-2xl hover:shadow-[#4A90A4]/40 text-lg px-8 py-4 relative overflow-hidden font-semibold"
                 >
-                  Get Started
+                  <span className="relative z-10 flex items-center space-x-2">
+                    <Zap className="w-5 h-5 group-hover:animate-pulse" />
+                    <span>Get Started</span>
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                 </Button>
               </Link>
-              <Button size="lg" className="bg-white text-[#4A90A4] hover:bg-[#163756] hover:text-white">
-                Learn More
+              <Button 
+                size="lg" 
+                className="group bg-white/10 backdrop-blur-md text-white border-2 border-white/30 hover:bg-white hover:text-[#4A90A4] transition-all duration-700 hover:scale-110 hover:shadow-2xl text-lg px-8 py-4 font-semibold"
+              >
+                <span className="flex items-center space-x-2">
+                  <Star className="w-5 h-5 group-hover:animate-spin group-hover:text-yellow-500 transition-colors duration-500" />
+                  <span>Learn More</span>
+                </span>
               </Button>
             </div>
           </div>
-          <div className="flex justify-end">
-            <img src="/hero-removebg.png" alt="Hero Image" className="w-full max-w-xl h-auto" />
+          
+          <div className="flex justify-end animate-in fade-in slide-in-from-right-8 duration-1200 delay-600">
+            <div className="relative group">
+              {/* Main Hero Image */}
+              <img 
+                src="/hero-removebg.png" 
+                alt="Hero Image" 
+                className="w-full max-w-xl h-auto transition-all duration-1000 group-hover:scale-110 group-hover:rotate-2 drop-shadow-2xl relative z-10" 
+              />
+              
+              {/* Main Glow Effect */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-[#4A90A4]/30 to-[#FF8A50]/30 rounded-3xl blur-2xl opacity-60 group-hover:opacity-100 transition-all duration-1000 animate-pulse"></div>
+              
+              {/* Floating Icons Around Hero */}
+              <div className="absolute -top-8 -left-8 w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center animate-float animation-delay-1000 group-hover:scale-125 transition-all duration-500">
+                <FileText className="w-8 h-8 text-white/80" />
+              </div>
+              
+              <div className="absolute top-12 -right-12 w-12 h-12 bg-[#FF8A50]/20 backdrop-blur-md rounded-xl flex items-center justify-center animate-float animation-delay-3000 group-hover:scale-125 transition-all duration-500">
+                <Star className="w-6 h-6 text-yellow-300" />
+              </div>
+              
+              <div className="absolute -bottom-4 -left-12 w-14 h-14 bg-[#4A90A4]/20 backdrop-blur-md rounded-2xl flex items-center justify-center animate-float animation-delay-2000 group-hover:scale-125 transition-all duration-500">
+                <CheckCircle className="w-7 h-7 text-green-300" />
+              </div>
+              
+              <div className="absolute bottom-16 -right-8 w-10 h-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center animate-float animation-delay-4000 group-hover:scale-125 transition-all duration-500">
+                <Zap className="w-5 h-5 text-yellow-300" />
+              </div>
+              
+              <div className="absolute top-1/3 -left-16 w-8 h-8 bg-purple-400/20 backdrop-blur-md rounded-lg flex items-center justify-center animate-float animation-delay-5000 group-hover:scale-125 transition-all duration-500">
+                <Sparkles className="w-4 h-4 text-purple-300" />
+              </div>
+              
+              {/* Orbiting Circles */}
+              <div className="absolute inset-0 animate-spin" style={{ animationDuration: '20s' }}>
+                <div className="absolute -top-12 left-1/2 w-4 h-4 bg-white/30 rounded-full transform -translate-x-1/2"></div>
+              </div>
+              
+              <div className="absolute inset-0 animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }}>
+                <div className="absolute top-1/2 -right-16 w-3 h-3 bg-[#FF8A50]/40 rounded-full transform -translate-y-1/2"></div>
+              </div>
+              
+              <div className="absolute inset-0 animate-spin" style={{ animationDuration: '25s' }}>
+                <div className="absolute -bottom-8 left-1/3 w-2 h-2 bg-[#4A90A4]/50 rounded-full"></div>
+              </div>
+              
+              {/* Additional Glow Rings */}
+              <div className="absolute inset-0 rounded-full border border-white/10 animate-ping" style={{ animationDuration: '3s' }}></div>
+              <div className="absolute inset-8 rounded-full border border-[#4A90A4]/20 animate-ping animation-delay-1000" style={{ animationDuration: '3s' }}></div>
+              
+              {/* Success Metrics Floating Cards */}
+              <div className="absolute -top-16 right-16 bg-white/10 backdrop-blur-md rounded-lg p-3 animate-float animation-delay-1500 group-hover:scale-110 transition-all duration-500">
+                <div className="text-white text-sm font-semibold">95% Success Rate</div>
+                <div className="text-green-300 text-xs">↑ +23% this month</div>
+              </div>
+              
+              <div className="absolute -bottom-12 left-12 bg-white/10 backdrop-blur-md rounded-lg p-3 animate-float animation-delay-2500 group-hover:scale-110 transition-all duration-500">
+                <div className="text-white text-sm font-semibold">AI Powered</div>
+                <div className="text-[#FF8A50] text-xs flex items-center">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Smart Analysis
+                </div>
+              </div>
+              
+              {/* Background Grid Pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+                  backgroundSize: '30px 30px',
+                  backgroundPosition: '0 0, 15px 15px'
+                }}></div>
+              </div>
+              
+              {/* Dynamic Light Beams */}
+              <div className="absolute top-1/4 left-1/4 w-1 h-32 bg-gradient-to-b from-white/30 to-transparent rotate-12 animate-pulse"></div>
+              <div className="absolute top-1/3 right-1/3 w-1 h-24 bg-gradient-to-b from-[#4A90A4]/40 to-transparent -rotate-12 animate-pulse animation-delay-2000"></div>
+              
+              {/* Floating Plus Icons */}
+              <div className="absolute top-8 right-24 text-white/20 animate-float animation-delay-3000">
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                </svg>
+              </div>
+              
+              <div className="absolute bottom-20 left-8 text-white/20 animate-float animation-delay-4000">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Key Features Section */}
-      <section id="features" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Key Features</h2>
-            <p className="text-xl text-gray-600">Everything you need to succeed in your job search</p>
+      <section id="features" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50/30 relative">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="text-center mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[#4A90A4]/10 to-[#FF8A50]/10 rounded-full px-6 py-3 mb-6">
+              <Star className="w-5 h-5 text-[#4A90A4] animate-pulse" />
+              <span className="text-sm font-semibold text-[#4A90A4]">POWERFUL FEATURES</span>
+            </div>
+            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-[#4A90A4] to-gray-900">
+                Key Features
+              </span>
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Everything you need to succeed in your job search, powered by cutting-edge AI technology
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-[#4A90A4] rounded-lg flex items-center justify-center mx-auto mb-6">
-                  <FileText className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-4">CV Analysis</h3>
-                <p className="text-gray-600">
-                  Get detailed feedback on your CV with AI-powered analysis and improvement suggestions.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-[#FF8A50] rounded-lg flex items-center justify-center mx-auto mb-6">
-                  <FileText className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-4">Cover Letter Generator</h3>
-                <p className="text-gray-600">
-                  Generate personalized cover letters for each job application in seconds.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-[#4A90A4] rounded-lg flex items-center justify-center mx-auto mb-6">
-                  <Euro className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-4">Salary Prediction</h3>
-                <p className="text-gray-600">Get accurate salary predictions based on your skills and market data.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-[#FF8A50] rounded-lg flex items-center justify-center mx-auto mb-6">
-                  <Users className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-4">Interview Preparation</h3>
-                <p className="text-gray-600">Practice with AI-powered mock interviews and get personalized feedback.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-[#4A90A4] rounded-lg flex items-center justify-center mx-auto mb-6">
-                  <FileText className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-4">Job Matching</h3>
-                <p className="text-gray-600">Find the perfect job matches with our AI-powered recommendation system.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-[#FF8A50] rounded-lg flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-4">Career Tracking</h3>
-                <p className="text-gray-600">Track your applications and career progress with detailed analytics.</p>
-              </CardContent>
-            </Card>
+            {[
+              {
+                icon: FileText,
+                title: "CV Analysis",
+                description: "Get detailed feedback on your CV with AI-powered analysis and improvement suggestions.",
+                color: "from-[#4A90A4] to-[#3E98A1]",
+                delay: "delay-100"
+              },
+              {
+                icon: FileText,
+                title: "Cover Letter Generator",
+                description: "Generate personalized cover letters for each job application in seconds.",
+                color: "from-[#FF8A50] to-[#FF6B35]",
+                delay: "delay-200"
+              },
+              {
+                icon: Euro,
+                title: "Salary Prediction",
+                description: "Get accurate salary predictions based on your skills and market data.",
+                color: "from-[#4A90A4] to-[#3E98A1]",
+                delay: "delay-300"
+              },
+              {
+                icon: Users,
+                title: "Interview Preparation",
+                description: "Practice with AI-powered mock interviews and get personalized feedback.",
+                color: "from-[#FF8A50] to-[#FF6B35]",
+                delay: "delay-400"
+              },
+              {
+                icon: FileText,
+                title: "Job Matching",
+                description: "Find the perfect job matches with our AI-powered recommendation system.",
+                color: "from-[#4A90A4] to-[#3E98A1]",
+                delay: "delay-500"
+              },
+              {
+                icon: CheckCircle,
+                title: "Career Tracking",
+                description: "Track your applications and career progress with detailed analytics.",
+                color: "from-[#FF8A50] to-[#FF6B35]",
+                delay: "delay-600"
+              }
+            ].map((feature, index) => (
+              <Card key={index} className={`border-0 shadow-xl hover:shadow-2xl transition-all duration-700 hover:scale-110 hover:-translate-y-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 ${feature.delay} group cursor-pointer bg-white/70 backdrop-blur-sm hover:bg-white`}>
+                <CardContent className="p-8 text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                  
+                  <div className={`w-20 h-20 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-700 group-hover:scale-125 group-hover:rotate-12 group-hover:shadow-2xl relative z-10`}>
+                    <feature.icon className="w-10 h-10 text-white transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-4 transition-all duration-500 group-hover:text-[#4A90A4] relative z-10">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 transition-all duration-500 group-hover:text-gray-700 leading-relaxed relative z-10">
+                    {feature.description}
+                  </p>
+                  
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600">Get started in three simple steps</p>
+      <section id="how-it-works" className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-blue-50/30 to-white"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="text-center mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-[#4A90A4] to-gray-900">
+                How It Works
+              </span>
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
+              Get started in three simple steps and transform your job search experience
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#4A90A4] rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-white">1</span>
+          <div className="grid md:grid-cols-3 gap-12 relative">
+            {[
+              {
+                number: "1",
+                title: "Upload CV",
+                description: "Upload your current CV to get started with our AI analysis.",
+                delay: "delay-200"
+              },
+              {
+                number: "2", 
+                title: "Get Analysis",
+                description: "Receive detailed feedback and improvement suggestions for your CV.",
+                delay: "delay-300"
+              },
+              {
+                number: "3",
+                title: "Find Jobs", 
+                description: "Discover personalized job matches and apply with confidence.",
+                delay: "delay-400"
+              }
+            ].map((step, index) => (
+              <div key={index} className={`text-center animate-in fade-in slide-in-from-bottom-8 duration-1000 ${step.delay} group`}>
+                <div className="relative mb-8">
+                  <div className={`w-24 h-24 ${index % 2 === 0 ? 'bg-gradient-to-br from-[#4A90A4] to-[#3E98A1]' : 'bg-gradient-to-br from-[#FF8A50] to-[#FF6B35]'} rounded-full flex items-center justify-center mx-auto transition-all duration-700 group-hover:scale-125 group-hover:shadow-2xl ${index % 2 === 0 ? 'group-hover:shadow-[#4A90A4]/40' : 'group-hover:shadow-[#FF8A50]/40'} relative overflow-hidden`}>
+                    <span className="text-3xl font-bold text-white transition-transform duration-700 group-hover:scale-110 relative z-10">
+                      {step.number}
+                    </span>
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                    <div className="absolute -inset-4 bg-gradient-to-r from-current/20 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-ping"></div>
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-bold mb-4 transition-all duration-500 group-hover:text-[#4A90A4] group-hover:scale-105">
+                  {step.title}
+                </h3>
+                <p className="text-gray-600 transition-all duration-500 group-hover:text-gray-700 text-lg leading-relaxed max-w-sm mx-auto">
+                  {step.description}
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-4">Upload CV</h3>
-              <p className="text-gray-600">Upload your current CV to get started with our AI analysis.</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#FF8A50] rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-white">2</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Get Analysis</h3>
-              <p className="text-gray-600">Receive detailed feedback and improvement suggestions for your CV.</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#4A90A4] rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-white">3</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Find Jobs</h3>
-              <p className="text-gray-600">Discover personalized job matches and apply with confidence.</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-blue-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">What Our Users Say</h2>
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-purple-50/30 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-40 h-40 bg-[#4A90A4]/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-60 h-60 bg-[#FF8A50]/10 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="text-center mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-[#4A90A4] to-gray-900">
+                What Our Users Say
+              </span>
+            </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-4"></div>
-                <h4 className="font-semibold mb-2">Sarah Johnson</h4>
-                <p className="text-gray-600 text-sm mb-4">Software Engineer</p>
-                <p className="text-gray-700">
-                  {'"HireOn.AI helped me land my dream job with their amazing CV analysis and job matching features."'}
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-4"></div>
-                <h4 className="font-semibold mb-2">Jennifer Lisa Vandall</h4>
-                <p className="text-gray-600 text-sm mb-4">Marketing Manager</p>
-                <p className="text-gray-700">
-                  {'"The cover letter generator saved me hours of work and helped me get more interview calls."'}
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-4"></div>
-                <h4 className="font-semibold mb-2">Riha Erfina</h4>
-                <p className="text-gray-600 text-sm mb-4">Data Scientist</p>
-                <p className="text-gray-700">
-                  {'"The AI-powered job recommendations are incredibly accurate. Found my perfect match!"'}
-                </p>
-              </CardContent>
-            </Card>
+            {[
+              {
+                name: "Sarah Johnson",
+                role: "Software Engineer", 
+                quote: "HireOn.AI helped me land my dream job with their amazing CV analysis and job matching features.",
+                delay: "delay-200"
+              },
+              {
+                name: "Jennifer Lisa Vandall",
+                role: "Marketing Manager",
+                quote: "The cover letter generator saved me hours of work and helped me get more interview calls.",
+                delay: "delay-300"
+              },
+              {
+                name: "Riha Erfina",
+                role: "Data Scientist",
+                quote: "The AI-powered job recommendations are incredibly accurate. Found my perfect match!",
+                delay: "delay-400"
+              }
+            ].map((testimonial, index) => (
+              <Card key={index} className={`border-0 shadow-xl hover:shadow-2xl transition-all duration-700 hover:scale-110 hover:-translate-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 ${testimonial.delay} group cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white relative overflow-hidden`}>
+                <CardContent className="p-8 text-center relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#4A90A4]/5 via-transparent to-[#FF8A50]/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                  
+                  <div className="w-20 h-20 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full mx-auto mb-6 transition-all duration-700 group-hover:scale-110 group-hover:shadow-xl relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#4A90A4]/20 to-[#FF8A50]/20 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                  </div>
+                  
+                  <h4 className="font-bold text-lg mb-2 transition-all duration-500 group-hover:text-[#4A90A4] relative z-10">
+                    {testimonial.name}
+                  </h4>
+                  <p className="text-gray-600 text-sm mb-6 font-medium relative z-10">{testimonial.role}</p>
+                  <p className="text-gray-700 transition-all duration-500 group-hover:text-gray-900 text-lg leading-relaxed relative z-10 italic">
+                    "{testimonial.quote}"
+                  </p>
+                  
+                  <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-40 transition-all duration-500">
+                    <Star className="w-6 h-6 text-[#4A90A4] group-hover:animate-pulse" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#2C3E50] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
+      <footer className="bg-gradient-to-br from-[#2C3E50] via-[#34495E] to-[#2C3E50] text-white py-16 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#4A90A4] via-[#FF8A50] to-[#4A90A4]"></div>
+          <div className="absolute bottom-20 left-20 w-32 h-32 bg-[#4A90A4]/10 rounded-full blur-2xl"></div>
+          <div className="absolute top-20 right-20 w-40 h-40 bg-[#FF8A50]/10 rounded-full blur-2xl"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <img src="/hireon-logo.png" alt="HireOn.AI Logo" className="w-8 h-8" />
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100">
+              <div className="flex items-center space-x-3 mb-6 group">
+                <div className="w-10 h-10 bg-gradient-to-br from-white to-gray-100 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-xl">
+                  <img src="/hireon-logo.png" alt="HireOn.AI Logo" className="w-10 h-10" />
                 </div>
-                <span className="text-xl font-bold">HireOn.AI</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent transition-all duration-500 group-hover:scale-105">
+                  HireOn.AI
+                </span>
               </div>
-              <p className="text-gray-300">Your personal assistant for job hunting with AI-powered tools.</p>
+              <p className="text-gray-300 leading-relaxed text-lg">
+                Your personal assistant for job hunting with AI-powered tools.
+              </p>
             </div>
 
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-300">
-                <li>
-                  <Link href="/" className="hover:text-white">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#features" className="hover:text-white">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#how-it-works" className="hover:text-white">
-                    How it Works
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-white">
-                    About
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            {[
+              {
+                title: "Quick Links",
+                links: [
+                  { name: "Home", href: "/" },
+                  { name: "Features", href: "#features" },
+                  { name: "How it Works", href: "#how-it-works" },
+                  { name: "About", href: "/about" }
+                ],
+                delay: "delay-200"
+              },
+              {
+                title: "Support", 
+                links: [
+                  { name: "Help Center", href: "/help" },
+                  { name: "Contact Us", href: "/contact" },
+                  { name: "Privacy Policy", href: "/privacy" },
+                  { name: "Terms of Service", href: "/terms" }
+                ],
+                delay: "delay-300"
+              }
+            ].map((section, index) => (
+              <div key={index} className={`animate-in fade-in slide-in-from-bottom-8 duration-1000 ${section.delay}`}>
+                <h4 className="font-bold text-xl mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
+                  {section.title}
+                </h4>
+                <ul className="space-y-3">
+                  {section.links.map((link, linkIndex) => (
+                    <li key={linkIndex}>
+                      <Link 
+                        href={link.href} 
+                        className="text-gray-300 hover:text-white transition-all duration-300 hover:text-[#4A90A4] text-lg hover:translate-x-2 inline-block relative group"
+                      >
+                        {link.name}
+                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
 
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-300">
-                <li>
-                  <Link href="/help" className="hover:text-white">
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-white">
-                    Contact Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="hover:text-white">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-white">
-                    Terms of Service
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Follow Us</h4>
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400">
+              <h4 className="font-bold text-xl mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
+                Follow Us
+              </h4>
               <div className="flex space-x-4">
-                <Github className="w-6 h-6 text-gray-300 hover:text-white cursor-pointer" />
-                <Youtube className="w-6 h-6 text-gray-300 hover:text-white cursor-pointer" />
-                <Linkedin className="w-6 h-6 text-gray-300 hover:text-white cursor-pointer" />
+                {[
+                  { Icon: Github, color: "hover:text-gray-300", hoverColor: "hover:bg-gray-700" },
+                  { Icon: Youtube, color: "hover:text-red-500", hoverColor: "hover:bg-red-500/20" },
+                  { Icon: Linkedin, color: "hover:text-blue-500", hoverColor: "hover:bg-blue-500/20" }
+                ].map(({ Icon, color, hoverColor }, index) => (
+                  <div key={index} className={`w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center transition-all duration-500 hover:scale-125 hover:shadow-xl cursor-pointer group ${hoverColor}`}>
+                    <Icon className={`w-6 h-6 text-gray-300 transition-all duration-300 ${color} group-hover:scale-110`} />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="border-t border-gray-600 mt-12 pt-8 text-center text-gray-300">
-            <p>&copy; 2025 HireOn.AI. All rights reserved.</p>
+          <div className="border-t border-gray-600/50 mt-12 pt-8 text-center animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
+            <p className="text-gray-300 text-lg">
+              &copy; 2025 <span className="font-semibold text-[#4A90A4]">HireOn.AI</span>. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
+
+      <style jsx>{`
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        
+        .animation-delay-1000 {
+          animation-delay: 1s;
+        }
+        
+        .animation-delay-1500 {
+          animation-delay: 1.5s;
+        }
+        
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        
+        .animation-delay-2500 {
+          animation-delay: 2.5s;
+        }
+        
+        .animation-delay-3000 {
+          animation-delay: 3s;
+        }
+        
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+        
+        .animation-delay-5000 {
+          animation-delay: 5s;
+        }
+        
+        .animation-delay-6000 {
+          animation-delay: 6s;
+        }
+        
+        .bg-grid-pattern {
+          background-image: radial-gradient(circle, #4A90A4 1px, transparent 1px);
+          background-size: 30px 30px;
+        }
+          .flip-text {
+        animation: flip-in 1.5s ease-in-out;
+        transform-style: preserve-3d;
+      }
+
+        @keyframes flip-in {
+          0% {
+            transform: rotateY(-90deg);
+            opacity: 0;
+          }
+          50% {
+            transform: rotateY(0deg);
+            opacity: 0.5;
+          }
+          100% {
+            transform: rotateY(0deg);
+            opacity: 1;
+          }
+        }
+
+      `}</style>
     </div>
   )
 }
