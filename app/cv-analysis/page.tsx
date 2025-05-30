@@ -31,6 +31,10 @@ export default function CVAnalysisPage() {
   const [activeTab, setActiveTab] = useState("upload");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showProgressValue, setShowProgressValue] = useState(false);
+
+  // Add state to track when to show progress animations
+  const [animateProgress, setAnimateProgress] = useState(false);
 
   const handleAnalyze = () => {
     setIsUploading(true);
@@ -44,12 +48,25 @@ export default function CVAnalysisPage() {
           setTimeout(() => {
             setIsUploading(false);
             setActiveTab("results");
+            // Trigger progress animations when results tab is shown
+            setTimeout(() => setAnimateProgress(true), 500);
           }, 500);
           return 100;
         }
         return prev + 10;
       });
     }, 200);
+  };
+  
+  // Reset animation state when switching back to upload tab
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    if (value === "upload") {
+      setAnimateProgress(false);
+    } else if (value === "results") {
+      // Delay animation start when switching to results tab
+      setTimeout(() => setAnimateProgress(true), 500);
+    }
   };
 
   return (
@@ -154,7 +171,7 @@ export default function CVAnalysisPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Enhanced Tabs with animations */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8 transition-all duration-300 hover:shadow-md">
             <TabsTrigger
               value="upload"
@@ -448,16 +465,25 @@ export default function CVAnalysisPage() {
                           {item.name}
                         </span>
                         <span
-                          className="font-semibold transition-all duration-300 group-hover:scale-110"
+                          className={`font-semibold transition-all duration-300 group-hover:scale-110 ${
+                            animateProgress ? 'animate-count-up' : ''
+                          }`}
                           style={{ color: item.color }}
+                          data-value={item.score}
                         >
-                          {item.score}%
+                          {animateProgress ? item.score : 0}%
                         </span>
                       </div>
-                      <Progress
-                        value={item.score}
-                        className="h-3 transition-all duration-300 group-hover:h-4"
-                      />
+                      <div className="relative h-3 w-full bg-gray-200 rounded-full overflow-hidden transition-all duration-300 group-hover:h-4">
+                        <div 
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{ 
+                            backgroundColor: item.color,
+                            width: animateProgress ? `${item.score}%` : '0%',
+                            transition: `width 1.5s ease-out ${index * 0.2}s`
+                          }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </CardContent>
@@ -612,6 +638,28 @@ export default function CVAnalysisPage() {
           to {
             stroke-dasharray: ${78 * 2.51} 251.2;
           }
+        }
+        
+        @keyframes progressAnimation {
+          from {
+            width: 0%;
+          }
+          to {
+            width: 100%;
+          }
+        }
+        
+        @keyframes countUp {
+          from {
+            content: "0%";
+          }
+          to {
+            content: attr(data-value) "%";
+          }
+        }
+        
+        .animate-count-up {
+          animation: countUp 1.5s forwards;
         }
       `}</style>
     </div>
