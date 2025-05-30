@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { User, MapPin, FileText, Calendar, ChevronDown, Lock, Menu, X } from "lucide-react"
+import { User, MapPin, FileText, Calendar, ChevronDown, Lock, Menu, X, ArrowRight, ExternalLink } from "lucide-react"
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false)
@@ -294,43 +294,74 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {savedJobs.map((job, index) => (
-                  <div
+                  <Link 
                     key={index}
-                    className={`border rounded-lg p-4 border-l-4 ${getMatchScoreBorderColor(job.matchScore)} 
-                      transition-all duration-500 hover:shadow-lg hover:scale-[1.02] group cursor-pointer`}
-                    style={{
-                      animationDelay: `${500 + index * 100}ms`,
-                    }}
+                    href={`/jobs/${job.title.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="block"
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div
-                        className={`w-10 sm:w-12 h-10 sm:h-12 rounded-full flex items-center justify-center ${getMatchScoreColor(
-                          job.matchScore,
-                        )} transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg ${getMatchScoreGlow(job.matchScore)} flex-shrink-0`}
-                      >
-                        <span className="text-white font-bold text-xs sm:text-sm">{job.matchScore}%</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium mb-1 transition-colors duration-300 group-hover:text-[#4A90A4] text-sm sm:text-base truncate">
-                          {job.title}
-                        </h4>
-                        <p className="text-xs sm:text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-700 truncate">
-                          {job.company}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      size="sm"
-                      className="bg-[#4A90A4] hover:bg-[#4A90A4]/90 w-full transition-all duration-300 hover:scale-105 hover:shadow-lg text-sm"
+                    <div
+                      className={`border rounded-lg p-4 border-l-4 ${getMatchScoreBorderColor(job.matchScore)} 
+                        transition-all duration-500 hover:shadow-xl hover:scale-[1.03] group cursor-pointer
+                        hover:border-[#4A90A4] hover:shadow-[#4A90A4]/10 hover:-translate-y-1 transform
+                        relative overflow-hidden`}
+                      style={{
+                        animationDelay: `${500 + index * 100}ms`,
+                      }}
                     >
-                      Apply Now
-                    </Button>
-                  </div>
+                      {/* Gradient overlay on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 via-transparent to-[#FF8A50]/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                      
+                      {/* Click indicator */}
+                      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0 z-20">
+                        <div className="bg-[#4A90A4] text-white p-1.5 rounded-full shadow-lg">
+                          <ExternalLink className="w-3 h-3" />
+                        </div>
+                      </div>
+
+                      <div className="relative z-10 pr-10">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div
+                            className={`w-10 sm:w-12 h-10 sm:h-12 rounded-full flex items-center justify-center ${getMatchScoreColor(
+                              job.matchScore,
+                            )} transition-all duration-500 group-hover:scale-125 group-hover:shadow-xl ${getMatchScoreGlow(job.matchScore)} flex-shrink-0 group-hover:animate-pulse relative z-10`}
+                          >
+                            <span className="text-white font-bold text-xs sm:text-sm">{job.matchScore}%</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium mb-1 transition-colors duration-300 group-hover:text-[#4A90A4] text-sm sm:text-base truncate group-hover:translate-x-1 transform">
+                              {job.title}
+                            </h4>
+                            <p className="text-xs sm:text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-700 truncate font-medium">
+                              {job.company}
+                            </p>
+                          </div>
+                          <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 z-10">
+                
+                          </div>
+                        </div>
+
+                        {/* Progress bar at bottom */}
+                        <div className="w-full bg-gray-200 rounded-full h-1 mt-3">
+                          <div 
+                            className={`h-1 rounded-full transition-all duration-700 ${getMatchScoreColor(job.matchScore).replace('bg-', 'bg-')} transform scale-x-0 group-hover:scale-x-100 origin-left`}
+                            style={{ width: `${job.matchScore}%` }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      {/* Bottom border animation */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    </div>
+                  </Link>
                 ))}
 
                 <Link href="/dashboard">
-                  <Button variant="outline" className="w-full transition-all duration-300 hover:scale-105 text-sm sm:text-base">
-                    View All Saved Jobs
+                  <Button variant="outline" className="w-full transition-all duration-300 hover:scale-105 text-sm sm:text-base group relative overflow-hidden">
+                    <span className="relative z-10 flex items-center justify-center">
+                      View All Saved Jobs
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/10 to-[#FF8A50]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </Button>
                 </Link>
               </CardContent>

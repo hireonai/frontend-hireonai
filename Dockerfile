@@ -1,10 +1,15 @@
+<<<<<<< Updated upstream
 FROM node:18-alpine AS builder
+=======
+# FROM node:18-alpine
+>>>>>>> Stashed changes
 
-WORKDIR /app
+# WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
+# # Install pnpm
+# RUN npm install -g pnpm
 
+<<<<<<< Updated upstream
 # Copy package files first
 COPY package*.json ./
 
@@ -35,3 +40,14 @@ COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3000
 
 CMD ["pnpm", "run", "start"]
+=======
+# COPY package*.json ./
+
+# RUN pnpm install
+
+# COPY . .
+
+# EXPOSE 3000
+
+# CMD ["pnpm", "run", "dev"]
+>>>>>>> Stashed changes

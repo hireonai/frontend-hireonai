@@ -10,7 +10,7 @@ import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Search, Upload, MapPin, Clock, DollarSign, ChevronDown, User, Bell, Filter, X } from "lucide-react"
+import { Search, Upload, MapPin, Clock, DollarSign, ChevronDown, User, Bell, Filter, X, ArrowRight } from "lucide-react"
 
 export default function DashboardPage() {
   const [salaryRange, setSalaryRange] = useState([0])
@@ -339,86 +339,97 @@ export default function DashboardPage() {
           <div className="flex-1 w-full lg:w-auto">
             <div className="space-y-4 lg:space-y-6">
               {jobs.map((job, index) => (
-                <Card
+                <Link 
                   key={index}
-                  className={`hover:shadow-xl transition-all duration-500 border-l-4 ${getMatchScoreBorderColor(job.matchScore)} 
-                    animate-in fade-in slide-in-from-bottom-4 group cursor-pointer
-                    hover:scale-[1.01] lg:hover:scale-[1.02] hover:-translate-y-1`}
-                  style={{
-                    animationDelay: `${400 + index * 100}ms`,
-                    animationFillMode: "both",
-                  }}
+                  href={`/jobs/${index + 1}`}
+                  className="block"
                 >
-                  <CardContent className="p-4 lg:p-6">
-                    <div className="flex flex-col sm:flex-row items-start gap-4">
-                      {/* Match Score Badge */}
-                      <div className="flex flex-col items-center self-center sm:self-start">
-                        <div
-                          className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center ${getMatchScoreColor(
-                            job.matchScore,
-                          )} shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:shadow-xl ${getMatchScoreGlow(job.matchScore)} group-hover:animate-pulse`}
-                        >
-                          <div className="text-center">
-                            <div className="text-white font-bold text-sm lg:text-base">{job.matchScore}%</div>
-                          </div>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-2 transition-colors duration-300 group-hover:text-gray-700">Match</p>
-                      </div>
+                  <Card
+                    className={`hover:shadow-2xl transition-all duration-500 border-l-4 ${getMatchScoreBorderColor(job.matchScore)} 
+                      animate-in fade-in slide-in-from-bottom-4 group cursor-pointer
+                      hover:scale-[1.02] lg:hover:scale-[1.03] hover:-translate-y-2 transform
+                      hover:border-[#4A90A4] hover:shadow-[#4A90A4]/10 
+                      relative overflow-hidden`}
+                    style={{
+                      animationDelay: `${400 + index * 100}ms`,
+                      animationFillMode: "both",
+                    }}
+                  >
+                    {/* Gradient overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 via-transparent to-[#FF8A50]/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                    
+                    {/* Click indicator */}
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0 z-20">
 
-                      {/* Job Content */}
-                      <div className="flex-1 w-full sm:w-auto">
-                        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 space-y-2 lg:space-y-0">
-                          <div className="flex-1">
-                            <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
-                              {job.title}
-                            </h3>
-                            <p className="text-gray-600 mb-2 transition-colors duration-300 group-hover:text-gray-700">
-                              {job.company}
-                            </p>
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-500">
-                              <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700">
-                                <MapPin className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
-                                <span className="truncate">{job.location}</span>
-                              </div>
-                              <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700">
-                                <Clock className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
-                                <span>{job.type}</span>
-                              </div>
-                              <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700">
-                                <DollarSign className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
-                                <span className="truncate">{job.salary}</span>
-                              </div>
+                    </div>
+
+                    <CardContent className="p-4 lg:p-6 relative z-10 pr-16">
+                      <div className="flex flex-col sm:flex-row items-start gap-4">
+                        {/* Match Score Badge */}
+                        <div className="flex flex-col items-center self-center sm:self-start z-10">
+                          <div
+                            className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center ${getMatchScoreColor(
+                              job.matchScore,
+                            )} shadow-lg transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl ${getMatchScoreGlow(job.matchScore)} group-hover:animate-pulse relative z-10`}
+                          >
+                            <div className="text-center">
+                              <div className="text-white font-bold text-sm lg:text-base">{job.matchScore}%</div>
                             </div>
                           </div>
-                          <div className="text-left lg:text-right">
-                            <p className="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
-                              {job.posted}
-                            </p>
-                          </div>
+                          <p className="text-xs text-gray-500 mt-2 transition-colors duration-300 group-hover:text-[#4A90A4] font-medium">Match</p>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+                        {/* Job Content */}
+                        <div className="flex-1 w-full sm:w-auto relative z-10">
+                          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 space-y-2 lg:space-y-0 pr-4">
+                            <div className="flex-1">
+                              <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-[#4A90A4] group-hover:translate-x-1 transform">
+                                {job.title}
+                              </h3>
+                              <p className="text-gray-600 mb-2 transition-colors duration-300 group-hover:text-gray-700 font-medium">
+                                {job.company}
+                              </p>
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-500">
+                                <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
+                                  <MapPin className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
+                                  <span className="truncate">{job.location}</span>
+                                </div>
+                                <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
+                                  <Clock className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
+                                  <span>{job.type}</span>
+                                </div>
+                                <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
+                                  <DollarSign className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
+                                  <span className="truncate font-medium">{job.salary}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-left lg:text-right">
+                              <p className="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
+                                {job.posted}
+                              </p>
+                            </div>
+                          </div>
+
                           <div className="flex flex-wrap gap-2">
-                            <Badge variant="outline" className="transition-all duration-300 hover:bg-gray-100 hover:scale-105 text-xs">
+                            <Badge variant="outline" className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs">
                               React
                             </Badge>
-                            <Badge variant="outline" className="transition-all duration-300 hover:bg-gray-100 hover:scale-105 text-xs">
+                            <Badge variant="outline" className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs">
                               TypeScript
                             </Badge>
-                            <Badge variant="outline" className="transition-all duration-300 hover:bg-gray-100 hover:scale-105 text-xs">
+                            <Badge variant="outline" className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs">
                               Next.js
                             </Badge>
                           </div>
-                          <Link href={`/jobs/${index + 1}`} className="w-full sm:w-auto">
-                            <Button className="bg-[#4A90A4] hover:bg-[#4A90A4]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg w-full sm:w-auto">
-                              Apply Now
-                            </Button>
-                          </Link>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+
+                    {/* Bottom border animation */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                  </Card>
+                </Link>
               ))}
             </div>
 
