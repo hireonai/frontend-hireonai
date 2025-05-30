@@ -10,7 +10,7 @@ import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Search, Upload, MapPin, Clock, DollarSign, ChevronDown, User, Bell, Filter, X, ArrowRight } from "lucide-react"
+import { Search, Upload, MapPin, Clock, DollarSign, ChevronDown, User, Bell, Filter, X } from "lucide-react"
 
 export default function DashboardPage() {
   const [salaryRange, setSalaryRange] = useState([0])
@@ -237,9 +237,9 @@ export default function DashboardPage() {
                 CV-Analysis
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link href="/dashboard" className="text-gray-700 hover:text-[#4A90A4] font-medium text-[#4A90A4] relative">
+              <Link href="/dashboard" className="text-gray-900 hover:text-[#4A90A4] font-medium relative group">
                 Job-list
-                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#4A90A4]"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </nav>
           </div>
@@ -357,13 +357,8 @@ export default function DashboardPage() {
                   >
                     {/* Gradient overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 via-transparent to-[#FF8A50]/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                    
-                    {/* Click indicator */}
-                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0 z-20">
 
-                    </div>
-
-                    <CardContent className="p-4 lg:p-6 relative z-10 pr-16">
+                    <CardContent className="p-4 lg:p-6 relative z-10">
                       <div className="flex flex-col sm:flex-row items-start gap-4">
                         {/* Match Score Badge */}
                         <div className="flex flex-col items-center self-center sm:self-start z-10">
@@ -381,7 +376,7 @@ export default function DashboardPage() {
 
                         {/* Job Content */}
                         <div className="flex-1 w-full sm:w-auto relative z-10">
-                          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 space-y-2 lg:space-y-0 pr-4">
+                          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 space-y-2 lg:space-y-0">
                             <div className="flex-1">
                               <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-[#4A90A4] group-hover:translate-x-1 transform">
                                 {job.title}
