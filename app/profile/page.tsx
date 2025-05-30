@@ -59,49 +59,36 @@ export default function ProfilePage() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-50 backdrop-blur-sm bg-white/95 transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4 lg:space-x-8">
+          <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2 group">
               <img src="/hireon-logo.png" alt="hireon-logo" className="h-8 w-auto align-middle transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3" />
               <span className="text-lg sm:text-xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#4A90A4]">
                 HireOn.AI
               </span>
             </Link>
-
-            {/* Desktop Navigation */}
+          </div>
+          <div className="flex-grow flex justify-center">
             <nav className="hidden lg:flex items-center space-x-6">
-              <Link
-                href="/"
-                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
-              >
+              <Link href="/" className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group">
                 Home
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link
-                href="/cv-analysis"
-                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
-              >
+              <Link href="/cv-analysis" className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group">
                 CV-Analysis
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link
-                href="/dashboard"
-                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
-              >
+              <Link href="/dashboard" className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group">
                 Job-list
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </nav>
           </div>
-
           <div className="flex items-center space-x-4">
-            {/* Desktop Dashboard Button */}
             <Link href="/dashboard" className="hidden sm:block">
               <Button variant="outline" className="transition-all duration-300 hover:scale-105">
                 Dashboard
               </Button>
             </Link>
-
-            {/* Profile Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
