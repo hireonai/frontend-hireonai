@@ -5,12 +5,16 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
+# Copy package files first
 COPY package*.json ./
 
+# Install dependencies
 RUN pnpm install --no-strict-peer-dependencies
 
+# Copy source code (node_modules is excluded via .dockerignore)
 COPY . .
 
+# Build the application
 RUN pnpm run build
 
 # Production image
