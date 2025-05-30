@@ -10,6 +10,7 @@ To make the workflow function properly, you need to add the following secrets in
 
 1. `GCP_PROJECT_ID`: Your Google Cloud Platform project ID
 2. `GCP_DEPLOY_SA_KEY`: The JSON service account key for deployment (with permissions for Cloud Run and Container Registry)
+3. `GCP_REGION`: The Google Cloud region where your Cloud Run service will be deployed (e.g., `asia-southeast2`, `us-central1`)
 
 ### Setting Up GitHub Secrets
 
