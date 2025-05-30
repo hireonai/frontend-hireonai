@@ -172,7 +172,7 @@ export default function JobDetailPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5 text-[#4A90A4]" />
+                  <FileText className="w-5 h-5 text-[#B01FCE]" />
                   <span>AI Cover Letter Generator</span>
                 </CardTitle>
               </CardHeader>
@@ -191,12 +191,27 @@ export default function JobDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-[#4A90A4] mb-2">90%</div>
-                  <p className="text-sm text-gray-600">Match Score</p>
+                  <div className="relative w-32 h-32 mx-auto mb-2">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="40" stroke="#e5e7eb" strokeWidth="8" fill="none" />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#4A90A4"
+                        strokeWidth="8"
+                        fill="none"
+                        strokeDasharray={`${90 * 2.51} 251.2`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-3xl font-bold text-[#4A90A4]">90%</span>
+                      <span className="text-xs text-[#B01FCE]">Match Score</span>
+                    </div>
+                  </div>
                 </div>
-
                 <Separator />
-
                 <div>
                   <h4 className="font-semibold mb-3 flex items-center space-x-2">
                     <TrendingUp className="w-4 h-4 text-green-600" />
