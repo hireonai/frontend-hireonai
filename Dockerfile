@@ -1,9 +1,9 @@
 FROM node:18-alpine AS builder
 
-# WORKDIR /app
+WORKDIR /app
 
-# # Install pnpm
-# RUN npm install -g pnpm
+# Install pnpm
+RUN npm install -g pnpm
 
 # Copy package files first
 COPY package*.json ./
