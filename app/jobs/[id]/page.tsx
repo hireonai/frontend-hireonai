@@ -14,7 +14,9 @@ export default function JobDetailPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
           <img src="/hireon-logo.png" alt="hireon Logo" className="h-8 w-auto align-middle" />
-          <span className="text-xl font-bold text-gray-900">HireOn.AI</span>
+          <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-gray-900 via-[#4A90A4] to-gray-900 bg-clip-text text-transparent transition-all duration-500 group-hover:scale-105">
+                HireOn.AI
+              </span>
           </Link>
 
           <div className="flex items-center space-x-4">
