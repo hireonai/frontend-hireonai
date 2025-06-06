@@ -1,21 +1,43 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Slider } from "@/components/ui/slider"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Search, Upload, MapPin, Clock, DollarSign, ChevronDown, User, Bell, Filter, X } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Search,
+  Upload,
+  MapPin,
+  Clock,
+  DollarSign,
+  ChevronDown,
+  User,
+  Bell,
+  Filter,
+  X,
+} from "lucide-react";
 
 export default function DashboardPage() {
-  const [salaryRange, setSalaryRange] = useState([0])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [showFilters, setShowFilters] = useState(false)
+  const [salaryRange, setSalaryRange] = useState([0]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   const jobCategories = [
     "Frontend Development",
@@ -26,7 +48,7 @@ export default function DashboardPage() {
     "DevOps",
     "UI/UX Design",
     "Product Management",
-  ]
+  ];
 
   const jobs = [
     {
@@ -83,28 +105,28 @@ export default function DashboardPage() {
       posted: "5 days ago",
       matchScore: 55,
     },
-  ]
+  ];
 
   const getMatchScoreColor = (score: number) => {
-    if (score >= 90) return "bg-green-500"
-    if (score >= 80) return "bg-blue-500"
-    if (score >= 70) return "bg-orange-500"
-    return "bg-red-500"
-  }
+    if (score >= 90) return "bg-green-500";
+    if (score >= 80) return "bg-blue-500";
+    if (score >= 70) return "bg-orange-500";
+    return "bg-red-500";
+  };
 
   const getMatchScoreBorderColor = (score: number) => {
-    if (score >= 90) return "border-l-green-500"
-    if (score >= 80) return "border-l-blue-500"
-    if (score >= 70) return "border-l-orange-500"
-    return "border-l-red-500"
-  }
+    if (score >= 90) return "border-l-green-500";
+    if (score >= 80) return "border-l-blue-500";
+    if (score >= 70) return "border-l-orange-500";
+    return "border-l-red-500";
+  };
 
   const getMatchScoreGlow = (score: number) => {
-    if (score >= 90) return "shadow-green-500/30"
-    if (score >= 80) return "shadow-blue-500/30"
-    if (score >= 70) return "shadow-orange-500/30"
-    return "shadow-red-500/30"
-  }
+    if (score >= 90) return "shadow-green-500/30";
+    if (score >= 80) return "shadow-blue-500/30";
+    if (score >= 70) return "shadow-orange-500/30";
+    return "shadow-red-500/30";
+  };
 
   const FilterSection = () => (
     <Card className="transition-all duration-300 hover:shadow-lg">
@@ -127,8 +149,14 @@ export default function DashboardPage() {
           <h3 className="font-semibold mb-4 text-sm lg:text-base">Upload CV</h3>
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 lg:p-6 text-center transition-all duration-300 hover:border-[#4A90A4] hover:bg-gray-50 group">
             <Upload className="w-6 lg:w-8 h-6 lg:h-8 text-gray-400 mx-auto mb-2 transition-all duration-300 group-hover:text-[#4A90A4] group-hover:scale-110" />
-            <p className="text-xs lg:text-sm text-gray-600 mb-2">Drag & drop your CV here</p>
-            <Button variant="outline" size="sm" className="bg-[#163B56] text-white hover:bg-white hover:text-[#163B56] transition-all duration-300 hover:scale-105 text-xs lg:text-sm">
+            <p className="text-xs lg:text-sm text-gray-600 mb-2">
+              Drag & drop your CV here
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-[#163B56] text-white hover:bg-white hover:text-[#163B56] transition-all duration-300 hover:scale-105 text-xs lg:text-sm"
+            >
               Browse Files
             </Button>
           </div>
@@ -136,7 +164,9 @@ export default function DashboardPage() {
 
         {/* Salary Range */}
         <div>
-          <h3 className="font-semibold mb-4 text-sm lg:text-base">Salary Range</h3>
+          <h3 className="font-semibold mb-4 text-sm lg:text-base">
+            Salary Range
+          </h3>
           <div className="space-y-4">
             <Slider
               value={salaryRange}
@@ -147,7 +177,9 @@ export default function DashboardPage() {
             />
             <div className="flex justify-between text-xs lg:text-sm text-gray-600">
               <span>$0</span>
-              <span className="font-medium text-[#4A90A4]">${salaryRange[0].toLocaleString()}</span>
+              <span className="font-medium text-[#4A90A4]">
+                ${salaryRange[0].toLocaleString()}
+              </span>
               <span>$70,000</span>
             </div>
           </div>
@@ -155,7 +187,9 @@ export default function DashboardPage() {
 
         {/* Experience Level */}
         <div>
-          <h3 className="font-semibold mb-4 text-sm lg:text-base">Experience Level</h3>
+          <h3 className="font-semibold mb-4 text-sm lg:text-base">
+            Experience Level
+          </h3>
           <Select>
             <SelectTrigger className="transition-all duration-300 focus:ring-2 focus:ring-[#4A90A4]/20">
               <SelectValue placeholder="Select experience" />
@@ -171,7 +205,9 @@ export default function DashboardPage() {
 
         {/* Job Categories */}
         <div>
-          <h3 className="font-semibold mb-4 text-sm lg:text-base">Job Categories</h3>
+          <h3 className="font-semibold mb-4 text-sm lg:text-base">
+            Job Categories
+          </h3>
           <div className="space-y-3 max-h-48 overflow-y-auto">
             {jobCategories.map((category) => (
               <div key={category} className="flex items-center space-x-2 group">
@@ -180,14 +216,19 @@ export default function DashboardPage() {
                   checked={selectedCategories.includes(category)}
                   onCheckedChange={(checked) => {
                     if (checked) {
-                      setSelectedCategories([...selectedCategories, category])
+                      setSelectedCategories([...selectedCategories, category]);
                     } else {
-                      setSelectedCategories(selectedCategories.filter((c) => c !== category))
+                      setSelectedCategories(
+                        selectedCategories.filter((c) => c !== category)
+                      );
                     }
                   }}
                   className="transition-all duration-300"
                 />
-                <label htmlFor={category} className="text-xs lg:text-sm text-gray-700 cursor-pointer transition-colors duration-300 group-hover:text-[#4A90A4]">
+                <label
+                  htmlFor={category}
+                  className="text-xs lg:text-sm text-gray-700 cursor-pointer transition-colors duration-300 group-hover:text-[#4A90A4]"
+                >
                   {category}
                 </label>
               </div>
@@ -197,7 +238,9 @@ export default function DashboardPage() {
 
         {/* Company Industry */}
         <div>
-          <h3 className="font-semibold mb-4 text-sm lg:text-base">Company Industry</h3>
+          <h3 className="font-semibold mb-4 text-sm lg:text-base">
+            Company Industry
+          </h3>
           <Select>
             <SelectTrigger className="transition-all duration-300 focus:ring-2 focus:ring-[#4A90A4]/20">
               <SelectValue placeholder="Select industry" />
@@ -212,7 +255,7 @@ export default function DashboardPage() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -221,7 +264,11 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2 group">
-              <img src="/hireon-logo.png" alt="hireon-logo" className="h-8 w-auto align-middle transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3" />
+              <img
+                src="/hireon-logo.png"
+                alt="hireon-logo"
+                className="h-8 w-auto align-middle transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+              />
               <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-gray-900 via-[#4A90A4] to-gray-900 bg-clip-text text-transparent transition-all duration-500 group-hover:scale-105">
                 HireOn.AI
               </span>
@@ -231,16 +278,25 @@ export default function DashboardPage() {
           {/* Desktop Navigation */}
           <div className="flex-grow flex justify-center">
             <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/" className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group">
+              <Link
+                href="/"
+                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
+              >
                 Home
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link href="/cv-analysis" className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group">
-                CV-Analysis
+              <Link
+                href="/dashboard"
+                className="text-gray-900 hover:text-[#4A90A4] font-medium relative group"
+              >
+                Job list
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link href="/dashboard" className="text-gray-900 hover:text-[#4A90A4] font-medium relative group">
-                Job-list
+              <Link
+                href="/cv-analysis"
+                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
+              >
+                CV Analysis
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </nav>
@@ -249,25 +305,38 @@ export default function DashboardPage() {
           {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300">
+              <Button
+                variant="ghost"
+                className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
+              >
                 <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
                   <User className="w-4 h-4" />
                 </div>
                 <ChevronDown className="w-4 h-4 transition-transform duration-300 hidden sm:block" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="animate-in slide-in-from-top-2 duration-300">
+            <DropdownMenuContent
+              align="end"
+              className="animate-in slide-in-from-top-2 duration-300"
+            >
               <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                <Link href="/" className="w-full">Home</Link>
+                <Link href="/" className="w-full">
+                  Home
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                <Link href="/cv-analysis" className="w-full">CV Analysis</Link>
+                <Link href="/cv-analysis" className="w-full">
+                  CV Analysis
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
-                <Link href="/profile" className="w-full">Profile</Link>
+                <Link href="/profile" className="w-full">
+                  Profile
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">Settings</DropdownMenuItem>
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">Logout</DropdownMenuItem>
+              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -276,8 +345,13 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
         {/* Page Header */}
         <div className="flex flex-col items-center text-center mb-6 lg:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Job Match Dashboard</h1>
-          <p className="text-gray-600 text-sm sm:text-base">Discover personalized job opportunities with our AI-powered scoring system</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+            Job Match Dashboard
+          </h1>
+          <p className="text-gray-600 text-sm sm:text-base">
+            Discover personalized job opportunities with our AI-powered scoring
+            system
+          </p>
         </div>
 
         {/* Search Bar */}
@@ -285,14 +359,17 @@ export default function DashboardPage() {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative group">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors duration-300 group-focus-within:text-[#4A90A4]" />
-              <Input placeholder="Search for jobs, companies, or skills..." className="pl-10 h-12 transition-all duration-300 focus:ring-2 focus:ring-[#4A90A4]/20 focus:border-[#4A90A4]" />
+              <Input
+                placeholder="Search for jobs, companies, or skills..."
+                className="pl-10 h-12 transition-all duration-300 focus:ring-2 focus:ring-[#4A90A4]/20 focus:border-[#4A90A4]"
+              />
             </div>
             <div className="flex gap-2">
               <Button className="h-12 px-6 lg:px-8 bg-[#FF8A50] hover:bg-[#FF8A50]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg flex-1 sm:flex-initial">
                 Search Jobs
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="h-12 px-4 lg:hidden transition-all duration-300 hover:scale-105"
                 onClick={() => setShowFilters(true)}
               >
@@ -310,9 +387,12 @@ export default function DashboardPage() {
                 <Bell className="w-5 lg:w-6 h-5 lg:h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">JOB MATCH FOUND</h3>
+                <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">
+                  JOB MATCH FOUND
+                </h3>
                 <p className="text-gray-600 text-sm lg:text-base">
-                  We're showing you {jobs.length} job listings that are currently available and verified to help you take the next
+                  We're showing you {jobs.length} job listings that are
+                  currently available and verified to help you take the next
                   step in your career.
                 </p>
               </div>
@@ -323,8 +403,14 @@ export default function DashboardPage() {
         <div className="flex gap-6 lg:gap-8 relative">
           {/* Mobile Filter Overlay */}
           {showFilters && (
-            <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setShowFilters(false)}>
-              <div className="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-white z-50 overflow-y-auto p-4" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={() => setShowFilters(false)}
+            >
+              <div
+                className="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-white z-50 overflow-y-auto p-4"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <FilterSection />
               </div>
             </div>
@@ -341,13 +427,11 @@ export default function DashboardPage() {
           <div className="flex-1 w-full lg:w-auto">
             <div className="space-y-4 lg:space-y-6">
               {jobs.map((job, index) => (
-                <Link 
-                  key={index}
-                  href={`/jobs/${index + 1}`}
-                  className="block"
-                >
+                <Link key={index} href={`/jobs/${index + 1}`} className="block">
                   <Card
-                    className={`hover:shadow-2xl transition-all duration-500 border-l-4 ${getMatchScoreBorderColor(job.matchScore)} 
+                    className={`hover:shadow-2xl transition-all duration-500 border-l-4 ${getMatchScoreBorderColor(
+                      job.matchScore
+                    )} 
                       animate-in fade-in slide-in-from-bottom-4 group cursor-pointer
                       hover:scale-[1.02] lg:hover:scale-[1.03] hover:-translate-y-2 transform
                       hover:border-[#4A90A4] hover:shadow-[#4A90A4]/10 
@@ -366,14 +450,20 @@ export default function DashboardPage() {
                         <div className="flex flex-col items-center self-center sm:self-start z-10">
                           <div
                             className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center ${getMatchScoreColor(
-                              job.matchScore,
-                            )} shadow-lg transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl ${getMatchScoreGlow(job.matchScore)} group-hover:animate-pulse relative z-10`}
+                              job.matchScore
+                            )} shadow-lg transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl ${getMatchScoreGlow(
+                              job.matchScore
+                            )} group-hover:animate-pulse relative z-10`}
                           >
                             <div className="text-center">
-                              <div className="text-white font-bold text-sm lg:text-base">{job.matchScore}%</div>
+                              <div className="text-white font-bold text-sm lg:text-base">
+                                {job.matchScore}%
+                              </div>
                             </div>
                           </div>
-                          <p className="text-xs text-gray-500 mt-2 transition-colors duration-300 group-hover:text-[#4A90A4] font-medium">Match</p>
+                          <p className="text-xs text-gray-500 mt-2 transition-colors duration-300 group-hover:text-[#4A90A4] font-medium">
+                            Match
+                          </p>
                         </div>
 
                         {/* Job Content */}
@@ -389,7 +479,9 @@ export default function DashboardPage() {
                               <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-500">
                                 <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
                                   <MapPin className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
-                                  <span className="truncate">{job.location}</span>
+                                  <span className="truncate">
+                                    {job.location}
+                                  </span>
                                 </div>
                                 <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
                                   <Clock className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
@@ -397,7 +489,9 @@ export default function DashboardPage() {
                                 </div>
                                 <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
                                   <DollarSign className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
-                                  <span className="truncate font-medium">{job.salary}</span>
+                                  <span className="truncate font-medium">
+                                    {job.salary}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -409,13 +503,22 @@ export default function DashboardPage() {
                           </div>
 
                           <div className="flex flex-wrap gap-2">
-                            <Badge variant="outline" className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs">
+                            <Badge
+                              variant="outline"
+                              className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs"
+                            >
                               React
                             </Badge>
-                            <Badge variant="outline" className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs">
+                            <Badge
+                              variant="outline"
+                              className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs"
+                            >
                               TypeScript
                             </Badge>
-                            <Badge variant="outline" className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs">
+                            <Badge
+                              variant="outline"
+                              className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs"
+                            >
                               Next.js
                             </Badge>
                           </div>
@@ -433,19 +536,32 @@ export default function DashboardPage() {
             {/* Pagination */}
             <div className="flex justify-center mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
               <div className="flex flex-wrap justify-center gap-2">
-                <Button variant="outline" disabled className="transition-all duration-300 text-sm px-3 py-2">
+                <Button
+                  variant="outline"
+                  disabled
+                  className="transition-all duration-300 text-sm px-3 py-2"
+                >
                   Previous
                 </Button>
                 <Button className="bg-[#4A90A4] text-white transition-all duration-300 hover:scale-105 text-sm px-3 py-2">
                   1
                 </Button>
-                <Button variant="outline" className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2">
+                <Button
+                  variant="outline"
+                  className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2"
+                >
                   2
                 </Button>
-                <Button variant="outline" className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2">
+                <Button
+                  variant="outline"
+                  className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2"
+                >
                   3
                 </Button>
-                <Button variant="outline" className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2">
+                <Button
+                  variant="outline"
+                  className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2"
+                >
                   Next
                 </Button>
               </div>
@@ -454,5 +570,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

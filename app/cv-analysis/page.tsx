@@ -57,7 +57,7 @@ export default function CVAnalysisPage() {
       });
     }, 200);
   };
-  
+
   // Reset animation state when switching back to upload tab
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -75,16 +75,19 @@ export default function CVAnalysisPage() {
       <header className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-50 backdrop-blur-sm bg-white/95 transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Link href="/" className="flex items-center space-x-2">
-            <img src="/hireon-logo.png" alt="hireon Logo" className="h-8 w-auto align-middle" />
-            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-gray-900 via-[#4A90A4] to-gray-900 bg-clip-text text-transparent transition-all duration-500 group-hover:scale-105">
-
+            <Link href="/" className="flex items-center space-x-2 group">
+              <img
+                src="/hireon-logo.png"
+                alt="hireon-logo"
+                className="h-8 w-auto align-middle transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+              />
+              <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-gray-900 via-[#4A90A4] to-gray-900 bg-clip-text text-transparent transition-all duration-500 group-hover:scale-105">
                 HireOn.AI
               </span>
             </Link>
           </div>
 
-          {/* Enhanced Navigation */}
+          {/* Desktop Navigation */}
           <div className="flex-grow flex justify-center">
             <nav className="hidden md:flex items-center space-x-6">
               <Link
@@ -95,80 +98,69 @@ export default function CVAnalysisPage() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
               <Link
-                href="/cv-analysis"
-                className="text-[#4A90A4] font-medium relative group"
+                href="/dashboard"
+                className="text-gray-900 hover:text-[#4A90A4] font-medium relative group"
               >
-                CV-Analysis
-                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#4A90A4]"></span>
+                Job list
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
               <Link
-                href="/dashboard"
+                href="/cv-analysis"
                 className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
               >
-                Job-list
+                CV Analysis
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </nav>
           </div>
 
-          {/* Enhanced Profile Section */}
-          <div className="flex items-center space-x-4">
-            <Link href="/dashboard">
+          {/* Profile Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button
-                variant="outline"
-                className="transition-all duration-300 hover:scale-105 hover:shadow-md"
+                variant="ghost"
+                className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
               >
-                Back to Dashboard
+                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                  <User className="w-4 h-4" />
+                </div>
+                <ChevronDown className="w-4 h-4 transition-transform duration-300 hidden sm:block" />
               </Button>
-            </Link>
-
-            {/* Profile Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
-                >
-                  <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
-                    <User className="w-4 h-4" />
-                  </div>
-                  <ChevronDown className="w-4 h-4 transition-transform duration-300 hidden sm:block" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="animate-in slide-in-from-top-2 duration-300"
-              >
-                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                  <Link href="/" className="w-full">
-                    Home
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                  <Link href="/dashboard" className="w-full">
-                    Job List
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
-                  <Link href="/profile" className="w-full">
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="animate-in slide-in-from-top-2 duration-300"
+            >
+              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                <Link href="/" className="w-full">
+                  Home
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                <Link href="/dashboard" className="w-full">
+                  Job List
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
+                <Link href="/profile" className="w-full">
+                  Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Enhanced Tabs with animations */}
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={handleTabChange}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-2 mb-8 transition-all duration-300 hover:shadow-md">
             <TabsTrigger
               value="upload"
@@ -463,7 +455,7 @@ export default function CVAnalysisPage() {
                         </span>
                         <span
                           className={`font-semibold transition-all duration-300 group-hover:scale-110 ${
-                            animateProgress ? 'animate-count-up' : ''
+                            animateProgress ? "animate-count-up" : ""
                           }`}
                           style={{ color: item.color }}
                           data-value={item.score}
@@ -472,12 +464,12 @@ export default function CVAnalysisPage() {
                         </span>
                       </div>
                       <div className="relative h-3 w-full bg-gray-200 rounded-full overflow-hidden transition-all duration-300 group-hover:h-4">
-                        <div 
+                        <div
                           className="h-full rounded-full transition-all duration-300"
-                          style={{ 
+                          style={{
                             backgroundColor: item.color,
-                            width: animateProgress ? `${item.score}%` : '0%',
-                            transition: `width 1.5s ease-out ${index * 0.2}s`
+                            width: animateProgress ? `${item.score}%` : "0%",
+                            transition: `width 1.5s ease-out ${index * 0.2}s`,
                           }}
                         />
                       </div>
@@ -636,7 +628,7 @@ export default function CVAnalysisPage() {
             stroke-dasharray: ${78 * 2.51} 251.2;
           }
         }
-        
+
         @keyframes progressAnimation {
           from {
             width: 0%;
@@ -645,7 +637,7 @@ export default function CVAnalysisPage() {
             width: 100%;
           }
         }
-        
+
         @keyframes countUp {
           from {
             content: "0%";
@@ -654,7 +646,7 @@ export default function CVAnalysisPage() {
             content: attr(data-value) "%";
           }
         }
-        
+
         .animate-count-up {
           animation: countUp 1.5s forwards;
         }
