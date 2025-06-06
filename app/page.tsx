@@ -116,8 +116,8 @@ export default function LandingPage() {
           </div>
         </div>
       </nav>
-
       {/* Hero Section */}
+      /************* ✨ Windsurf Command 🌟 *************/
       <section className="relative bg-gradient-to-br from-[#163756] via-[#202838] via-[#3E98A1] to-[#163756] text-white py-16 md:py-20 overflow-hidden mt-20 scroll-mt-24">
         {/* Animated Background */}
         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -230,9 +230,123 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+          {/* Right: Hero Image */}
+          <div className="hidden md:flex justify-center md:justify-end mb-8 md:mb-0 order-2 md:order-2 md:pl-8">
+            <div className="relative group max-w-xs sm:max-w-md md:max-w-xl w-full">
+              <img
+                src="/hero-removebg.png"
+                alt="Hero Image"
+                className="w-full h-auto transition-all duration-1000 group-hover:scale-110 group-hover:rotate-2 drop-shadow-2xl relative z-10"
+              />
+              {/* Main Glow Effect */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-[#4A90A4]/30 to-[#FF8A50]/30 rounded-3xl blur-2xl opacity-60 group-hover:opacity-100 transition-all duration-1000 animate-pulse"></div>
+              {/* Floating Icons Around Hero */}
+              <div
+                className="absolute -top-8 -left-8 w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center animate-float animation-delay-1000 group-hover:scale-125 transition-all duration-500"
+                style={{ zIndex: -1 }}
+              >
+                <FileText className="w-8 h-8 text-white/80" />
+              </div>
+              <div className="absolute top-12 -right-12 w-12 h-12 bg-[#FF8A50]/20 backdrop-blur-md rounded-xl flex items-center justify-center animate-float animation-delay-3000 group-hover:scale-125 transition-all duration-500">
+                <Star className="w-6 h-6 text-yellow-300" />
+              </div>
+              <div className="absolute -bottom-4 -left-12 w-14 h-14 bg-[#4A90A4]/20 backdrop-blur-md rounded-2xl flex items-center justify-center animate-float animation-delay-2000 group-hover:scale-125 transition-all duration-500">
+                <CheckCircle className="w-7 h-7 text-green-300" />
+              </div>
+              <div className="absolute bottom-16 -right-8 w-10 h-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center animate-float animation-delay-4000 group-hover:scale-125 transition-all duration-500">
+                <Zap className="w-5 h-5 text-yellow-300" />
+              </div>
+              <div className="absolute top-1/3 -left-16 w-8 h-8 bg-purple-400/20 backdrop-blur-md rounded-lg flex items-center justify-center animate-float animation-delay-5000 group-hover:scale-125 transition-all duration-500">
+                <Sparkles className="w-4 h-4 text-purple-300" />
+              </div>
+              {/* Orbiting Circles */}
+              <div
+                className="absolute inset-0 animate-spin"
+                style={{ animationDuration: "20s" }}
+              >
+                <div className="absolute -top-12 left-1/2 w-4 h-4 bg-white/30 rounded-full transform -translate-x-1/2"></div>
+              </div>
+              <div
+                className="absolute inset-0 animate-spin"
+                style={{
+                  animationDuration: "15s",
+                  animationDirection: "reverse",
+                }}
+              >
+                <div className="absolute top-1/2 -right-16 w-3 h-3 bg-[#FF8A50]/40 rounded-full transform -translate-y-1/2"></div>
+              </div>
+              <div
+                className="absolute inset-0 animate-spin"
+                style={{ animationDuration: "25s" }}
+              >
+                <div className="absolute -bottom-8 left-1/3 w-2 h-2 bg-[#4A90A4]/50 rounded-full"></div>
+              </div>
+              {/* Additional Glow Rings */}
+              <div
+                className="absolute inset-0 rounded-full border border-white/10 animate-ping"
+                style={{ animationDuration: "3s" }}
+              ></div>
+              <div
+                className="absolute inset-8 rounded-full border border-[#4A90A4]/20 animate-ping animation-delay-1000"
+                style={{ animationDuration: "3s" }}
+              ></div>
+              {/* Success Metrics Floating Cards */}
+              <div
+                className="absolute -top-16 right-16 bg-white/10 backdrop-blur-md rounded-lg p-3 animate-float animation-delay-1500 group-hover:scale-110 transition-all duration-500"
+                style={{ zIndex: -1 }}
+              >
+                <div className="text-white text-sm font-semibold">
+                  95% Success Rate
+                </div>
+                <div className="text-green-300 text-xs">↑ +23% this month</div>
+              </div>
+              <div className="absolute -bottom-12 left-12 bg-white/10 backdrop-blur-md rounded-lg p-3 animate-float animation-delay-2500 group-hover:scale-110 transition-all duration-500">
+                <div className="text-white text-sm font-semibold">
+                  AI Powered
+                </div>
+                <div className="text-[#FF8A50] text-xs flex items-center">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Smart Analysis
+                </div>
+              </div>
+              {/* Background Grid Pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage:
+                      "radial-gradient(circle, white 1px, transparent 1px)",
+                    backgroundSize: "30px 30px",
+                    backgroundPosition: "0 0, 15px 15px",
+                  }}
+                ></div>
+              </div>
+              {/* Dynamic Light Beams */}
+              <div className="absolute top-1/4 left-1/4 w-1 h-32 bg-gradient-to-b from-white/30 to-transparent rotate-12 animate-pulse"></div>
+              <div className="absolute top-1/3 right-1/3 w-1 h-24 bg-gradient-to-b from-[#4A90A4]/40 to-transparent -rotate-12 animate-pulse animation-delay-2000"></div>
+              {/* Floating Plus Icons */}
+              <div className="absolute top-8 right-24 text-white/20 animate-float animation-delay-3000">
+                <svg
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                </svg>
+              </div>
+              <div className="absolute bottom-20 left-8 text-white/20 animate-float animation-delay-4000">
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-
       {/* Key Features Section */}
       <section
         id="features"
@@ -338,7 +452,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
       {/* How It Works Section */}
       <section id="how-it-works" className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-white via-blue-50/30 to-white"></div>
@@ -415,7 +528,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
       {/* Testimonials Section */}
       <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-purple-50/30 relative overflow-hidden">
         <div className="absolute inset-0">
@@ -489,7 +601,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="bg-gradient-to-br from-[#2C3E50] via-[#34495E] to-[#2C3E50] text-white py-16 relative overflow-hidden">
         <div className="absolute inset-0">
@@ -606,7 +717,6 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-
       <style jsx>{`
         @keyframes blob {
           0% {
