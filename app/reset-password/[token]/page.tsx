@@ -1,39 +1,51 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { forgotPasswordApi } from "@/lib/api/auth";
+import { resetPasswordApi } from "@/lib/api/auth";
 
-const schema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
-});
-
-export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+const schema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(64),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+export default function ResetPasswordPage() {
+  const { token } = useParams<{ token: string }>();
   const { toast } = useToast();
   const router = useRouter();
+  const [form, setForm] = useState({ newPassword: "", confirmPassword: "" });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = schema.safeParse({ email });
+    const result = schema.safeParse(form);
     if (!result.success) {
+      const error = result.error.errors[0];
       toast({
         title: "Error",
-        description: result.error.errors[0].message,
+        description: error.message,
         variant: "error",
       });
       return;
     }
     setLoading(true);
-    const res = await forgotPasswordApi(email);
+    const res = await resetPasswordApi(token as string, form.newPassword);
     setLoading(false);
     if (res.success) {
       toast({
@@ -112,23 +124,33 @@ export default function ForgotPasswordPage() {
         <Card className="w-full max-w-md border-0 shadow-lg">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-gray-900">
-              Forgot Password
+              Reset Password
             </CardTitle>
-            <p className="text-gray-600">
-              Enter your email to receive reset instructions
-            </p>
+            <p className="text-gray-600">Enter your new password to reset</p>
           </CardHeader>
           <CardContent className="space-y-6">
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="newPassword">New Password</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email address"
+                  id="newPassword"
+                  type="password"
+                  placeholder="Create a new password"
                   className="h-12"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={form.newPassword}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm your new password"
+                  className="h-12"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
                   disabled={loading}
                 />
               </div>
@@ -137,19 +159,9 @@ export default function ForgotPasswordPage() {
                 type="submit"
                 disabled={loading}
               >
-                {loading ? "Sending..." : "Send Email"}
+                {loading ? "Resetting..." : "Reset Password"}
               </Button>
             </form>
-
-            <div className="text-center">
-              <Link
-                href="/login"
-                className="inline-flex items-center text-sm text-[#4A90A4] hover:underline"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Login
-              </Link>
-            </div>
           </CardContent>
         </Card>
       </div>

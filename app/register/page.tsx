@@ -1,11 +1,93 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { useAuthStore } from "@/store/auth";
+
+const registerSchema = z
+  .object({
+    email: z.string().email({ message: "Email is not valid" }),
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 3 characters" }),
+    fullname: z.string().min(3, { message: "Full name is required" }),
+    phone: z.string().min(8, { message: "Phone number is required" }),
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters" }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: "Confirmation password is required" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password and confirmation password do not match",
+    path: ["confirmPassword"],
+  });
 
 export default function RegisterPage() {
+  const [form, setForm] = useState({
+    email: "",
+    username: "",
+    fullname: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const register = useAuthStore((s) => s.register);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const parse = registerSchema.safeParse(form);
+    if (!parse.success) {
+      const err = parse.error.errors[0];
+      toast({
+        title: "Error",
+        description: err.message,
+        variant: "error",
+      });
+      return;
+    }
+    setLoading(true);
+    const result = await register({
+      email: form.email,
+      username: form.username,
+      fullname: form.fullname,
+      phone: form.phone,
+      password: form.password,
+    });
+    setLoading(false);
+    if (result.success) {
+      toast({
+        title: "Success",
+        description: result.message,
+        variant: "success",
+      });
+      router.push("/login");
+    } else {
+      toast({
+        title: "Error",
+        description: result.message,
+        variant: "error",
+      });
+    }
+  };
   return (
     <div className="min-h-screen flex">
       {/* Left Sidebar */}
@@ -74,7 +156,11 @@ export default function RegisterPage() {
             <p className="text-gray-600">Fill in your details to get started</p>
           </CardHeader>
           <CardContent className="space-y-6">
-            <form className="space-y-4">
+            <form
+              className="space-y-4"
+              onSubmit={handleSubmit}
+              autoComplete="off"
+            >
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -82,9 +168,12 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="Enter your email"
                   className="h-12"
+                  value={form.email}
+                  onChange={handleChange}
+                  disabled={loading}
+                  autoComplete="email"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
@@ -92,19 +181,25 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="Choose a username"
                   className="h-12"
+                  value={form.username}
+                  onChange={handleChange}
+                  disabled={loading}
+                  autoComplete="username"
                 />
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullname">Full Name</Label>
                 <Input
-                  id="fullName"
+                  id="fullname"
                   type="text"
                   placeholder="Enter your full name"
                   className="h-12"
+                  value={form.fullname}
+                  onChange={handleChange}
+                  disabled={loading}
+                  autoComplete="name"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
                 <Input
@@ -112,9 +207,12 @@ export default function RegisterPage() {
                   type="tel"
                   placeholder="Enter your phone number"
                   className="h-12"
+                  value={form.phone}
+                  onChange={handleChange}
+                  disabled={loading}
+                  autoComplete="tel"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -122,9 +220,12 @@ export default function RegisterPage() {
                   type="password"
                   placeholder="Create a password"
                   className="h-12"
+                  value={form.password}
+                  onChange={handleChange}
+                  disabled={loading}
+                  autoComplete="new-password"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
@@ -132,10 +233,18 @@ export default function RegisterPage() {
                   type="password"
                   placeholder="Confirm your password"
                   className="h-12"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  disabled={loading}
+                  autoComplete="new-password"
                 />
               </div>
-              <Button className="w-full h-12 bg-[#163756] hover:bg-white hover:text-[#163756] text-white">
-                Register
+              <Button
+                className="w-full h-12 bg-[#163756] hover:bg-white hover:text-[#163756] text-white"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Registering..." : "Register"}
               </Button>
             </form>
 

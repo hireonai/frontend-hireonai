@@ -1,11 +1,55 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { activateApi } from "@/lib/api/auth";
 
-export default function ResetPasswordPage() {
+const schema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address." }),
+});
+
+export default function ActivatePage() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = schema.safeParse({ email });
+    if (!result.success) {
+      toast({
+        title: "Error",
+        description: result.error.errors[0].message,
+        variant: "error",
+      });
+      return;
+    }
+    setLoading(true);
+    const res = await activateApi(email);
+    setLoading(false);
+    if (res.success) {
+      toast({
+        title: "Success",
+        description: res.message,
+        variant: "success",
+      });
+      setTimeout(() => router.push("/login"), 2000);
+    } else {
+      toast({
+        title: "Error",
+        description: res.message || "Failed to send email activation.",
+        variant: "error",
+      });
+    }
+  };
   return (
     <div className="min-h-screen flex">
       {/* Left Sidebar */}
@@ -68,36 +112,44 @@ export default function ResetPasswordPage() {
         <Card className="w-full max-w-md border-0 shadow-lg">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-gray-900">
-              Reset Password
+              Send Email Activation
             </CardTitle>
-            <p className="text-gray-600">Enter your new password to reset</p>
+            <p className="text-gray-600">
+              Enter your email to receive a link to activate your account.
+            </p>
           </CardHeader>
           <CardContent className="space-y-6">
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
+                <Label htmlFor="email">Email Address</Label>
                 <Input
-                  id="newPassword"
-                  type="password"
-                  placeholder="Create a new password"
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email address"
                   className="h-12"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Confirm your new password"
-                  className="h-12"
-                />
-              </div>
-
-              <Button className="w-full h-12 bg-[#163756] hover:bg-white hover:text-[#163756] text-white">
-                Reset Password
+              <Button
+                className="w-full h-12 bg-[#163756] hover:bg-white hover:text-[#163756] text-white"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Sending..." : "Send Email"}
               </Button>
             </form>
+
+            <div className="text-center">
+              <Link
+                href="/login"
+                className="inline-flex items-center text-sm text-[#4A90A4] hover:underline"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Back to Login
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>
