@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { resetPasswordApi } from "@/lib/api/auth";
+import { useProfileStore } from "@/store/profile";
 
 const schema = z
   .object({
@@ -27,6 +28,16 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const [form, setForm] = useState({ newPassword: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
+
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((s) => s.fetchProfile);
+
+  useEffect(() => {
+    fetchProfile();
+    if (profile) {
+      router.replace("/dashboard");
+    }
+  }, [profile, router, fetchProfile]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.id]: e.target.value }));

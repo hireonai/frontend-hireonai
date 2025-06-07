@@ -19,28 +19,29 @@ import { Badge } from "@/components/ui/badge";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, TrendingUp } from "lucide-react";
 import { CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/store/auth";
+import { useProfileStore } from "@/store/profile";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CVAnalysisPage() {
   const [activeTab, setActiveTab] = useState("upload");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [showProgressValue, setShowProgressValue] = useState(false);
 
-  // Add state to track when to show progress animations
   const [animateProgress, setAnimateProgress] = useState(false);
 
   const handleAnalyze = () => {
     setIsUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 100) {
@@ -48,7 +49,7 @@ export default function CVAnalysisPage() {
           setTimeout(() => {
             setIsUploading(false);
             setActiveTab("results");
-            // Trigger progress animations when results tab is shown
+
             setTimeout(() => setAnimateProgress(true), 500);
           }, 500);
           return 100;
@@ -58,15 +59,33 @@ export default function CVAnalysisPage() {
     }, 200);
   };
 
-  // Reset animation state when switching back to upload tab
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     if (value === "upload") {
       setAnimateProgress(false);
     } else if (value === "results") {
-      // Delay animation start when switching to results tab
       setTimeout(() => setAnimateProgress(true), 500);
     }
+  };
+
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const handleLogout = () => {
+    useAuthStore.getState().logout();
+    useProfileStore.getState().clearProfile();
+    toast({
+      title: "Success",
+      description: "Logout successfully.",
+      variant: "success",
+    });
+    router.push("/");
   };
 
   return (
@@ -106,7 +125,7 @@ export default function CVAnalysisPage() {
               </Link>
               <Link
                 href="/cv-analysis"
-                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
+                className="text-[#4A90A4] transition-colors duration-300 relative group"
               >
                 CV Analysis
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
@@ -115,42 +134,74 @@ export default function CVAnalysisPage() {
           </div>
 
           {/* Profile Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
+          {profile ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
+                >
+                  {profile?.photoUrl ? (
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                      <img
+                        src={profile.photoUrl}
+                        alt="profile-photo"
+                        className="w-full h-full rounded-full"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                      <User className="w-4 h-4" />
+                    </div>
+                  )}
+                  <ChevronDown className="w-4 h-4 transition-transform duration-300 hidden sm:block" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="animate-in slide-in-from-top-2 duration-300"
               >
-                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
-                  <User className="w-4 h-4" />
-                </div>
-                <ChevronDown className="w-4 h-4 transition-transform duration-300 hidden sm:block" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="animate-in slide-in-from-top-2 duration-300"
-            >
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                <Link href="/" className="w-full">
-                  Home
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                <Link href="/dashboard" className="w-full">
-                  Job List
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
-                <Link href="/profile" className="w-full">
-                  Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                  <Link href="/" className="w-full">
+                    Home
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                  <Link href="/dashboard" className="w-full">
+                    Job list
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
+                  <Link href="/profile" className="w-full">
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="transition-colors duration-200 hover:bg-gray-100"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center space-x-4">
+              <Link href="/login">
+                <Button
+                  variant="outline"
+                  className="border-2 border-[#4A90A4] text-[#4A90A4] hover:bg-[#4A90A4] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-[#4A90A4]/25 backdrop-blur-sm font-semibold"
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button className="bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] text-white hover:from-[#FF8A50] hover:to-[#4A90A4] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-[#4A90A4]/30 font-semibold relative overflow-hidden group">
+                  <span className="relative z-10">Register</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </header>
 

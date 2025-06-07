@@ -5,6 +5,12 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   CheckCircle,
   FileText,
   Euro,
@@ -17,7 +23,13 @@ import {
   UserRound,
   Instagram,
   Twitter,
+  User,
+  ChevronDown,
 } from "lucide-react";
+import { useAuthStore } from "@/store/auth";
+import { useProfileStore } from "@/store/profile";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 function useSmoothScroll() {
   useEffect(() => {
@@ -49,6 +61,25 @@ function useSmoothScroll() {
 
 export default function LandingPage() {
   useSmoothScroll();
+
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const handleLogout = () => {
+    useAuthStore.getState().logout();
+    useProfileStore.getState().clearProfile();
+    toast({
+      title: "Success",
+      description: "Logout successfully.",
+      variant: "success",
+    });
+  };
 
   return (
     <div id="home" className="min-h-screen bg-white overflow-x-hidden">
@@ -99,25 +130,78 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Link href="/login">
-              <Button
-                variant="outline"
-                className="border-2 border-[#4A90A4] text-[#4A90A4] hover:bg-[#4A90A4] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-[#4A90A4]/25 backdrop-blur-sm font-semibold"
-              >
-                Login
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button className="bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] text-white hover:from-[#FF8A50] hover:to-[#4A90A4] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-[#4A90A4]/30 font-semibold relative overflow-hidden group">
-                <span className="relative z-10">Register</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-              </Button>
-            </Link>
+            {profile ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
+                  >
+                    {profile?.photoUrl ? (
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                        <img
+                          src={profile.photoUrl}
+                          alt="profile-photo"
+                          className="w-full h-full rounded-full"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                        <User className="w-4 h-4" />
+                      </div>
+                    )}
+                    <ChevronDown className="w-4 h-4 transition-transform duration-300 hidden sm:block" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="animate-in slide-in-from-top-2 duration-300"
+                >
+                  <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                    <Link href="/dashboard" className="w-full">
+                      Job List
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                    <Link href="/cv-analysis" className="w-full">
+                      CV Analysis
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
+                    <Link href="/profile" className="w-full">
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="transition-colors duration-200 hover:bg-gray-100"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link href="/login">
+                  <Button
+                    variant="outline"
+                    className="border-2 border-[#4A90A4] text-[#4A90A4] hover:bg-[#4A90A4] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-[#4A90A4]/25 backdrop-blur-sm font-semibold"
+                  >
+                    Login
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button className="bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] text-white hover:from-[#FF8A50] hover:to-[#4A90A4] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-[#4A90A4]/30 font-semibold relative overflow-hidden group">
+                    <span className="relative z-10">Register</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </nav>
       {/* Hero Section */}
-      /************* ✨ Windsurf Command 🌟 *************/
       <section className="relative bg-gradient-to-br from-[#163756] via-[#202838] via-[#3E98A1] to-[#163756] text-white py-16 md:py-20 overflow-hidden mt-20 scroll-mt-24">
         {/* Animated Background */}
         <div className="absolute inset-0 z-0 pointer-events-none">

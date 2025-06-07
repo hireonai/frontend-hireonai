@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,12 +26,13 @@ import {
   FileText,
   Calendar,
   ChevronDown,
-  Lock,
-  Menu,
-  X,
   ArrowRight,
   ExternalLink,
 } from "lucide-react";
+import { useAuthStore } from "@/store/auth";
+import { useProfileStore } from "@/store/profile";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -74,6 +75,32 @@ export default function ProfilePage() {
     if (score >= 80) return "shadow-blue-500/30";
     if (score >= 70) return "shadow-orange-500/30";
     return "shadow-red-500/30";
+  };
+
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (profile === null) {
+      fetchProfile().then((res) => {
+        if (!res.success) {
+          router.push("/login");
+        }
+      });
+    }
+  }, [profile, fetchProfile, router]);
+
+  const handleLogout = () => {
+    useAuthStore.getState().logout();
+    useProfileStore.getState().clearProfile();
+    toast({
+      title: "Success",
+      description: "Logout successfully.",
+      variant: "success",
+    });
+    router.push("/");
   };
 
   return (
@@ -122,42 +149,74 @@ export default function ProfilePage() {
           </div>
 
           {/* Profile Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
+          {profile ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
+                >
+                  {profile?.photoUrl ? (
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                      <img
+                        src={profile.photoUrl}
+                        alt="profile-photo"
+                        className="w-full h-full rounded-full"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                      <User className="w-4 h-4" />
+                    </div>
+                  )}
+                  <ChevronDown className="w-4 h-4 transition-transform duration-300 hidden sm:block" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="animate-in slide-in-from-top-2 duration-300"
               >
-                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
-                  <User className="w-4 h-4" />
-                </div>
-                <ChevronDown className="w-4 h-4 transition-transform duration-300 hidden sm:block" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="animate-in slide-in-from-top-2 duration-300"
-            >
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                <Link href="/" className="w-full">
-                  Home
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                <Link href="/dashboard" className="w-full">
-                  Job List
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
-                <Link href="/cv-analysis" className="w-full">
-                  CV Analysis
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                  <Link href="/" className="w-full">
+                    Home
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                  <Link href="/dashboard" className="w-full">
+                    Job list
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
+                  <Link href="/cv-analysis" className="w-full">
+                    CV Analysis
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="transition-colors duration-200 hover:bg-gray-100"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center space-x-4">
+              <Link href="/login">
+                <Button
+                  variant="outline"
+                  className="border-2 border-[#4A90A4] text-[#4A90A4] hover:bg-[#4A90A4] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-[#4A90A4]/25 backdrop-blur-sm font-semibold"
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button className="bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] text-white hover:from-[#FF8A50] hover:to-[#4A90A4] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-[#4A90A4]/30 font-semibold relative overflow-hidden group">
+                  <span className="relative z-10">Register</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </header>
 

@@ -35,6 +35,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useProfileStore } from "@/store/profile";
+import { useRouter } from "next/navigation";
 
 export default function JobDetailPage() {
   const [animateProgress, setAnimateProgress] = useState(false);
@@ -63,6 +65,20 @@ export default function JobDetailPage() {
   const handleSaveJob = () => {
     setIsSaved(!isSaved);
   };
+
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (profile === null) {
+      fetchProfile().then((res) => {
+        if (!res.success) {
+          router.push("/login");
+        }
+      });
+    }
+  }, [profile, fetchProfile, router]);
 
   return (
     <div className="min-h-screen bg-gray-50">

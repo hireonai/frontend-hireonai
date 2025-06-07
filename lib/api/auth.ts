@@ -52,7 +52,7 @@ export async function loginApi(
 ): Promise<LoginResponse> {
   try {
     const res = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+      "/auth/login",
       { username, password },
       { headers: { "Content-Type": "application/json" } }
     );
@@ -82,11 +82,9 @@ export async function registerApi(
   params: RegisterParams
 ): Promise<RegisterResponse> {
   try {
-    const res = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
-      params,
-      { headers: { "Content-Type": "application/json" } }
-    );
+    const res = await axiosInstance.post("/auth/register", params, {
+      headers: { "Content-Type": "application/json" },
+    });
     return res.data;
   } catch (error: any) {
     if (error.response && error.response.data) {
@@ -124,7 +122,7 @@ export async function forgotPasswordApi(
 ): Promise<ForgotPasswordResponse> {
   try {
     const res = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password`,
+      "/auth/forgot-password",
       { email },
       { headers: { "Content-Type": "application/json" } }
     );
@@ -160,7 +158,7 @@ export type ActivateResponse = ActivateSuccessResponse | ActivateErrorResponse;
 export async function activateApi(email: string): Promise<ActivateResponse> {
   try {
     const res = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/send-activation-email`,
+      "/auth/send-activation-email",
       { email },
       { headers: { "Content-Type": "application/json" } }
     );
@@ -201,7 +199,7 @@ export async function resetPasswordApi(
 ): Promise<ResetPasswordResponse> {
   try {
     const res = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password`,
+      "/auth/reset-password",
       { token, newPassword },
       { headers: { "Content-Type": "application/json" } }
     );

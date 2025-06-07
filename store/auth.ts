@@ -1,4 +1,5 @@
 import { create } from "zustand";
+
 import {
   loginApi,
   registerApi,
@@ -10,8 +11,6 @@ import {
 } from "../lib/api/auth";
 
 interface AuthState {
-  user: User | null;
-  token: string | null;
   setToken: (token: string) => void;
   login: (
     username: string,
@@ -32,23 +31,19 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
   setToken: (token: string) => {
-    set({ token });
     localStorage.setItem("token", token);
   },
   login: async (username, password) => {
     const res = await loginApi(username, password);
     if (res.success) {
-      set({ user: res.data.user, token: res.data.token });
       localStorage.setItem("token", res.data.token);
       return { success: true, message: res.message };
     } else {
       return { success: false, message: res.message || "Login failed." };
     }
   },
-  logout: () => set({ user: null, token: null }),
+  logout: () => localStorage.removeItem("token"),
   register: async (params: RegisterParams) => {
     const res = await registerApi(params);
     if (res.success) {

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { activateApi } from "@/lib/api/auth";
+import { useProfileStore } from "@/store/profile";
 
 const schema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -20,6 +21,16 @@ export default function ActivatePage() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((s) => s.fetchProfile);
+
+  useEffect(() => {
+    fetchProfile();
+    if (profile) {
+      router.replace("/dashboard");
+    }
+  }, [profile, router, fetchProfile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

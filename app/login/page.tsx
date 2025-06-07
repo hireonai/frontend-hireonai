@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useAuthStore } from "@/store/auth";
+import { useProfileStore } from "@/store/profile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,10 +29,17 @@ function LoginForm() {
   } | null>(null);
   const login = useAuthStore((state) => state.login);
   const setToken = useAuthStore((s) => s.setToken);
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((s) => s.fetchProfile);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
+    fetchProfile();
+    if (profile) {
+      router.replace("/dashboard");
+    }
+
     const token = searchParams.get("token");
     const success = searchParams.get("success");
     const error = searchParams.get("error");
@@ -39,6 +47,11 @@ function LoginForm() {
     if (token) {
       setAlert(null);
       setToken(token);
+      toast({
+        title: "Success",
+        description: "Login successfully.",
+        variant: "success",
+      });
       router.replace("/dashboard");
     } else if (success) {
       setAlert({
@@ -53,8 +66,7 @@ function LoginForm() {
       });
       router.replace("/login");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, setToken, router]);
+  }, [searchParams, setToken, profile, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -83,6 +95,7 @@ function LoginForm() {
         description: result.message,
         variant: "success",
       });
+      fetchProfile();
       router.push("/dashboard");
     } else {
       toast({
