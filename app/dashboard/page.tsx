@@ -1,7 +1,8 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
+import { useDebounce } from "@/hooks/use-debounce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,101 +36,138 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { useProfileStore } from "@/store/profile";
+import { useReferenciesStore } from "@/store/referencies";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useJobsStore } from "@/store/jobs";
+import { Pagination } from "@/components/ui/pagination";
+import { JobsPagination } from "@/components/jobs-pagination";
+import { ActiveFilters } from "@/components/active-filters";
+import { JobListSkeleton } from "@/components/job-list-skeleton";
 
 export default function DashboardPage() {
+  const [currentPage, setCurrentPage] = useState(1);
   const [salaryRange, setSalaryRange] = useState([0]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedExperience, setSelectedExperience] = useState<
+    string | undefined
+  >();
+  const [selectedIndustry, setSelectedIndustry] = useState<
+    string | undefined
+  >();
   const [showFilters, setShowFilters] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [submittedKeyword, setSubmittedKeyword] = useState("");
+  const debouncedSearchKeyword = useDebounce(searchKeyword, 300);
 
-  const jobCategories = [
-    "Frontend Development",
-    "Backend Development",
-    "Full Stack Development",
-    "Mobile Development",
-    "Data Science",
-    "DevOps",
-    "UI/UX Design",
-    "Product Management",
-  ];
+  useEffect(() => {
+    setSearchKeyword(debouncedSearchKeyword);
+  }, [debouncedSearchKeyword]);
 
-  const jobs = [
-    {
-      title: "Senior Frontend Developer",
-      company: "TechCorp Solutions",
-      location: "Jakarta, Indonesia",
-      type: "Full-time",
-      salary: "$60,000 - $80,000",
-      posted: "2 days ago",
-      matchScore: 95,
-    },
-    {
-      title: "Machine Learning Engineer",
-      company: "DataTech Inc",
-      location: "Bandung, Indonesia",
-      type: "Full-time",
-      salary: "$55,000 - $75,000",
-      posted: "3 days ago",
-      matchScore: 87,
-    },
-    {
-      title: "Full Stack Developer",
-      company: "StartupXYZ",
-      location: "Remote",
-      type: "Contract",
-      salary: "$50,000 - $70,000",
-      posted: "1 day ago",
-      matchScore: 82,
-    },
-    {
-      title: "Backend Developer",
-      company: "TechCorp Solutions",
-      location: "Jakarta, Indonesia",
-      type: "Full-time",
-      salary: "$45,000 - $65,000",
-      posted: "4 days ago",
-      matchScore: 75,
-    },
-    {
-      title: "Data Scientist",
-      company: "AI Solutions Ltd",
-      location: "Surabaya, Indonesia",
-      type: "Full-time",
-      salary: "$60,000 - $85,000",
-      posted: "1 week ago",
-      matchScore: 68,
-    },
-    {
-      title: "UI/UX Designer",
-      company: "Creative Agency",
-      location: "Yogyakarta, Indonesia",
-      type: "Part-time",
-      salary: "$30,000 - $45,000",
-      posted: "5 days ago",
-      matchScore: 55,
-    },
-  ];
-
-  const getMatchScoreColor = (score: number) => {
-    if (score >= 90) return "bg-green-500";
-    if (score >= 80) return "bg-blue-500";
-    if (score >= 70) return "bg-orange-500";
+  const getMatchScoreColor = (score: string | null) => {
+    if (score === null) return "bg-gray-500";
+    const scoreValue = parseFloat(score.replace("%", ""));
+    if (scoreValue >= 85) return "bg-green-500";
+    if (scoreValue >= 60) return "bg-blue-500";
+    if (scoreValue >= 45) return "bg-orange-500";
     return "bg-red-500";
   };
 
-  const getMatchScoreBorderColor = (score: number) => {
-    if (score >= 90) return "border-l-green-500";
-    if (score >= 80) return "border-l-blue-500";
-    if (score >= 70) return "border-l-orange-500";
+  const getMatchScoreBorderColor = (score: string | null) => {
+    if (score === null) return "border-l-gray-500";
+    const scoreValue = parseFloat(score.replace("%", ""));
+    if (scoreValue >= 85) return "border-l-green-500";
+    if (scoreValue >= 60) return "border-l-blue-500";
+    if (scoreValue >= 45) return "border-l-orange-500";
     return "border-l-red-500";
   };
 
-  const getMatchScoreGlow = (score: number) => {
-    if (score >= 90) return "shadow-green-500/30";
-    if (score >= 80) return "shadow-blue-500/30";
-    if (score >= 70) return "shadow-orange-500/30";
+  const getMatchScoreGlow = (score: string | null) => {
+    if (score === null) return "";
+    const scoreValue = parseFloat(score.replace("%", ""));
+    if (scoreValue >= 85) return "shadow-green-500/30";
+    if (scoreValue >= 60) return "shadow-blue-500/30";
+    if (scoreValue >= 45) return "shadow-orange-500/30";
     return "shadow-red-500/30";
+  };
+
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const jobCategories = useReferenciesStore((state) => state.jobCategories);
+  const fetchJobCategories = useReferenciesStore(
+    (state) => state.fetchJobCategories
+  );
+
+  const jobMinExperiences = useReferenciesStore(
+    (state) => state.jobMinExperiences
+  );
+  const fetchJobMinExperiences = useReferenciesStore(
+    (state) => state.fetchJobMinExperiences
+  );
+
+  const companyIndustries = useReferenciesStore(
+    (state) => state.companyIndustries
+  );
+  const fetchCompanyIndustries = useReferenciesStore(
+    (state) => state.fetchCompanyIndustries
+  );
+
+  const jobs = useJobsStore((state) => state.jobs);
+  const fetchJobsList = useJobsStore((state) => state.fetchJobsList);
+  const pagination = useJobsStore((state) => state.pagination);
+  const loading = useJobsStore((state) => state.loading);
+
+  useEffect(() => {
+    fetchJobsList({
+      page: currentPage,
+      category: selectedCategories,
+      experience: selectedExperience,
+      industry: selectedIndustry,
+      minSalary: 0,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+      keyword: submittedKeyword || undefined,
+    });
+    fetchProfile();
+    fetchJobCategories();
+    fetchJobMinExperiences();
+    fetchCompanyIndustries();
+    handleFilterChange(currentPage);
+  }, [
+    currentPage,
+    fetchJobsList,
+    fetchJobCategories,
+    fetchJobMinExperiences,
+    fetchCompanyIndustries,
+    selectedCategories,
+    selectedExperience,
+    selectedIndustry,
+    salaryRange,
+    submittedKeyword,
+  ]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategories, selectedExperience, selectedIndustry, salaryRange]);
+
+  const handleFilterChange = (page: number) => {
+    fetchJobsList({
+      page,
+      category: selectedCategories,
+      experience: selectedExperience,
+      industry: selectedIndustry,
+      minSalary: 0,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+      keyword: searchKeyword,
+    });
+    setCurrentPage(page);
+  };
+
+  const handleSearch = () => {
+    setSubmittedKeyword(searchKeyword);
+    setCurrentPage(1);
   };
 
   const FilterSection = () => (
@@ -175,16 +213,29 @@ export default function DashboardPage() {
             <Slider
               value={salaryRange}
               onValueChange={setSalaryRange}
-              max={70000}
-              step={5000}
+              max={7000000}
+              step={500000}
               className="w-full"
             />
             <div className="flex justify-between text-xs lg:text-sm text-gray-600">
-              <span>$0</span>
-              <span className="font-medium text-[#4A90A4]">
-                ${salaryRange[0].toLocaleString()}
+              <span>
+                {Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(0)}
               </span>
-              <span>$70,000</span>
+              <span className="font-medium text-[#4A90A4]">
+                {Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(salaryRange[0])}
+              </span>
+              <span>
+                {Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(70000000)}
+              </span>
             </div>
           </div>
         </div>
@@ -194,15 +245,19 @@ export default function DashboardPage() {
           <h3 className="font-semibold mb-4 text-sm lg:text-base">
             Experience Level
           </h3>
-          <Select>
-            <SelectTrigger className="transition-all duration-300 focus:ring-2 focus:ring-[#4A90A4]/20">
+          <Select
+            value={selectedExperience}
+            onValueChange={(value) => setSelectedExperience(value)}
+          >
+            <SelectTrigger>
               <SelectValue placeholder="Select experience" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="fresh">Fresh Graduate</SelectItem>
-              <SelectItem value="1-2">1-2 years</SelectItem>
-              <SelectItem value="3-5">3-5 years</SelectItem>
-              <SelectItem value="5+">5+ years</SelectItem>
+              {jobMinExperiences?.map((exp) => (
+                <SelectItem key={exp._id} value={exp._id}>
+                  {exp.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -213,27 +268,31 @@ export default function DashboardPage() {
             Job Categories
           </h3>
           <div className="space-y-3 max-h-48 overflow-y-auto">
-            {jobCategories.map((category) => (
-              <div key={category} className="flex items-center space-x-2 group">
+            {jobCategories?.map((category) => (
+              <div
+                key={category._id}
+                className="flex items-center space-x-2 group"
+              >
                 <Checkbox
-                  id={category}
-                  checked={selectedCategories.includes(category)}
+                  id={category._id}
+                  checked={selectedCategories.includes(category._id)}
                   onCheckedChange={(checked) => {
+                    let newArr;
                     if (checked) {
-                      setSelectedCategories([...selectedCategories, category]);
+                      newArr = [...selectedCategories, category._id];
                     } else {
-                      setSelectedCategories(
-                        selectedCategories.filter((c) => c !== category)
+                      newArr = selectedCategories.filter(
+                        (c) => c !== category._id
                       );
                     }
+                    setSelectedCategories(newArr);
                   }}
-                  className="transition-all duration-300"
                 />
                 <label
-                  htmlFor={category}
-                  className="text-xs lg:text-sm text-gray-700 cursor-pointer transition-colors duration-300 group-hover:text-[#4A90A4]"
+                  htmlFor={category._id}
+                  className="text-xs lg:text-sm text-gray-700 cursor-pointer"
                 >
-                  {category}
+                  {category.name}
                 </label>
               </div>
             ))}
@@ -245,30 +304,25 @@ export default function DashboardPage() {
           <h3 className="font-semibold mb-4 text-sm lg:text-base">
             Company Industry
           </h3>
-          <Select>
-            <SelectTrigger className="transition-all duration-300 focus:ring-2 focus:ring-[#4A90A4]/20">
+          <Select
+            value={selectedIndustry}
+            onValueChange={(value) => setSelectedIndustry(value)}
+          >
+            <SelectTrigger>
               <SelectValue placeholder="Select industry" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="tech">Technology</SelectItem>
-              <SelectItem value="finance">Finance</SelectItem>
-              <SelectItem value="healthcare">Healthcare</SelectItem>
-              <SelectItem value="education">Education</SelectItem>
+              {companyIndustries?.map((industry) => (
+                <SelectItem key={industry._id} value={industry._id}>
+                  {industry.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </CardContent>
     </Card>
   );
-
-  const profile = useProfileStore((state) => state.profile);
-  const fetchProfile = useProfileStore((state) => state.fetchProfile);
-  const router = useRouter();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
 
   const handleLogout = () => {
     useAuthStore.getState().logout();
@@ -414,14 +468,24 @@ export default function DashboardPage() {
         <div className="mb-6 lg:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative group">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors duration-300 group-focus-within:text-[#4A90A4]" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors duration-300 group-focus-within:text-[#4A90A4]" />{" "}
               <Input
+                defaultValue={searchKeyword}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  requestAnimationFrame(() => {
+                    setSearchKeyword(value);
+                  });
+                }}
                 placeholder="Search for jobs, companies, or skills..."
                 className="pl-10 h-12 transition-all duration-300 focus:ring-2 focus:ring-[#4A90A4]/20 focus:border-[#4A90A4]"
               />
             </div>
             <div className="flex gap-2">
-              <Button className="h-12 px-6 lg:px-8 bg-[#FF8A50] hover:bg-[#FF8A50]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg flex-1 sm:flex-initial">
+              <Button
+                onClick={handleSearch}
+                className="h-12 px-6 lg:px-8 bg-[#FF8A50] hover:bg-[#FF8A50]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg flex-1 sm:flex-initial"
+              >
                 Search Jobs
               </Button>
               <Button
@@ -435,26 +499,93 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <ActiveFilters
+          submittedKeyword={submittedKeyword}
+          onRemoveKeyword={() => {
+            setSearchKeyword("");
+            setSubmittedKeyword("");
+            setCurrentPage(1);
+          }}
+          salaryRange={salaryRange}
+          onRemoveSalary={() => {
+            setSalaryRange([0, 0]);
+            setCurrentPage(1);
+          }}
+          selectedExperience={selectedExperience}
+          onRemoveExperience={() => {
+            setSelectedExperience(undefined);
+            setCurrentPage(1);
+          }}
+          jobMinExperiences={jobMinExperiences}
+          selectedIndustry={selectedIndustry}
+          onRemoveIndustry={() => {
+            setSelectedIndustry(undefined);
+            setCurrentPage(1);
+          }}
+          companyIndustries={companyIndustries}
+          selectedCategories={selectedCategories}
+          onRemoveCategory={(id) => {
+            setSelectedCategories(selectedCategories.filter((c) => c !== id));
+            setCurrentPage(1);
+          }}
+          jobCategories={jobCategories}
+          onResetAll={() => {
+            setSearchKeyword("");
+            setSubmittedKeyword("");
+            setSalaryRange([0, 0]);
+            setSelectedExperience(undefined);
+            setSelectedIndustry(undefined);
+            setSelectedCategories([]);
+            setCurrentPage(1);
+          }}
+        />
+
         {/* Job Match Notification */}
-        <Card className="mb-6 lg:mb-8 border-l-4 border-l-[#4A90A4] bg-blue-50 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 hover:shadow-lg transition-all duration-300">
-          <CardContent className="p-4 lg:p-6">
-            <div className="flex items-start space-x-4">
-              <div className="w-10 lg:w-12 h-10 lg:h-12 bg-[#4A90A4] rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
-                <Bell className="w-5 lg:w-6 h-5 lg:h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">
-                  JOB MATCH FOUND
-                </h3>
-                <p className="text-gray-600 text-sm lg:text-base">
-                  We're showing you {jobs.length} job listings that are
-                  currently available and verified to help you take the next
-                  step in your career.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {!loading && (
+          <>
+            {jobs.length === 0 ? (
+              <Card className="mb-6 lg:mb-8 border-l-4 border-l-red-500 bg-red-50 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-4 lg:p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-10 lg:w-12 h-10 lg:h-12 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                      <Bell className="w-5 lg:w-6 h-5 lg:h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg lg:text-xl font-bold text-red-900 mb-2">
+                        NO JOB MATCH FOUND
+                      </h3>
+                      <p className="text-red-600 text-sm lg:text-base">
+                        We're sorry, but we couldn't find any job listings that
+                        match your search criteria. Please try adjusting your
+                        search filters or searching for a different job title.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="mb-6 lg:mb-8 border-l-4 border-l-[#4A90A4] bg-blue-50 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-4 lg:p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-10 lg:w-12 h-10 lg:h-12 bg-[#4A90A4] rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                      <Bell className="w-5 lg:w-6 h-5 lg:h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">
+                        JOB MATCH FOUND
+                      </h3>
+                      <p className="text-gray-600 text-sm lg:text-base">
+                        We're showing you {pagination?.totalItems} job listings
+                        that are currently available and verified to help you
+                        take the next step in your career.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
 
         <div className="flex gap-6 lg:gap-8 relative">
           {/* Mobile Filter Overlay */}
@@ -482,146 +613,154 @@ export default function DashboardPage() {
           {/* Main Content - Job Listings */}
           <div className="flex-1 w-full lg:w-auto">
             <div className="space-y-4 lg:space-y-6">
-              {jobs.map((job, index) => (
-                <Link key={index} href={`/jobs/${index + 1}`} className="block">
-                  <Card
-                    className={`hover:shadow-2xl transition-all duration-500 border-l-4 ${getMatchScoreBorderColor(
-                      job.matchScore
-                    )} 
+              {loading ? (
+                <JobListSkeleton count={5} />
+              ) : jobs.length === 0 ? (
+                <Card className="h-1/2 flex items-center justify-center py-16">
+                  <div className="text-center text-gray-400">
+                    <div className="text-lg font-semibold mb-1">
+                      Job not found
+                    </div>
+                    <div className="text-sm">
+                      Try adjusting your filters or search keyword.
+                    </div>
+                  </div>
+                </Card>
+              ) : (
+                jobs.map((job, index) => (
+                  <Link
+                    key={index}
+                    href={`/jobs/${index + 1}`}
+                    className="block"
+                  >
+                    <Card
+                      className={`hover:shadow-2xl transition-all duration-500 border-l-4 ${getMatchScoreBorderColor(
+                        job.scoreMatch
+                      )} 
                       animate-in fade-in slide-in-from-bottom-4 group cursor-pointer
                       hover:scale-[1.02] lg:hover:scale-[1.03] hover:-translate-y-2 transform
                       hover:border-[#4A90A4] hover:shadow-[#4A90A4]/10 
                       relative overflow-hidden`}
-                    style={{
-                      animationDelay: `${400 + index * 100}ms`,
-                      animationFillMode: "both",
-                    }}
-                  >
-                    {/* Gradient overlay on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 via-transparent to-[#FF8A50]/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                      style={{
+                        animationDelay: `${400 + index * 100}ms`,
+                        animationFillMode: "both",
+                      }}
+                    >
+                      {/* Gradient overlay on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 via-transparent to-[#FF8A50]/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
 
-                    <CardContent className="p-4 lg:p-6 relative z-10">
-                      <div className="flex flex-col sm:flex-row items-start gap-4">
-                        {/* Match Score Badge */}
-                        <div className="flex flex-col items-center self-center sm:self-start z-10">
-                          <div
-                            className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center ${getMatchScoreColor(
-                              job.matchScore
-                            )} shadow-lg transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl ${getMatchScoreGlow(
-                              job.matchScore
-                            )} group-hover:animate-pulse relative z-10`}
-                          >
-                            <div className="text-center">
-                              <div className="text-white font-bold text-sm lg:text-base">
-                                {job.matchScore}%
-                              </div>
-                            </div>
-                          </div>
-                          <p className="text-xs text-gray-500 mt-2 transition-colors duration-300 group-hover:text-[#4A90A4] font-medium">
-                            Match
-                          </p>
-                        </div>
-
-                        {/* Job Content */}
-                        <div className="flex-1 w-full sm:w-auto relative z-10">
-                          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 space-y-2 lg:space-y-0">
-                            <div className="flex-1">
-                              <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-[#4A90A4] group-hover:translate-x-1 transform">
-                                {job.title}
-                              </h3>
-                              <p className="text-gray-600 mb-2 transition-colors duration-300 group-hover:text-gray-700 font-medium">
-                                {job.company}
-                              </p>
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-500">
-                                <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
-                                  <MapPin className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
-                                  <span className="truncate">
-                                    {job.location}
-                                  </span>
-                                </div>
-                                <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
-                                  <Clock className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
-                                  <span>{job.type}</span>
-                                </div>
-                                <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
-                                  <DollarSign className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
-                                  <span className="truncate font-medium">
-                                    {job.salary}
-                                  </span>
+                      <CardContent className="p-4 lg:p-6 relative z-10">
+                        <div className="flex flex-col sm:flex-row items-start gap-4">
+                          {/* Match Score Badge */}
+                          <div className="flex flex-col items-center self-center sm:self-start z-10">
+                            <div
+                              className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center ${getMatchScoreColor(
+                                job.scoreMatch
+                              )} shadow-lg transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl ${getMatchScoreGlow(
+                                job.scoreMatch
+                              )} group-hover:animate-pulse relative z-10`}
+                            >
+                              <div className="text-center">
+                                <div className="text-white font-bold text-sm lg:text-base">
+                                  {job.scoreMatch ? job.scoreMatch : "-"}
                                 </div>
                               </div>
                             </div>
-                            <div className="text-left lg:text-right">
-                              <p className="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
-                                {job.posted}
-                              </p>
+                            <p className="text-xs text-gray-500 mt-2 transition-colors duration-300 group-hover:text-[#4A90A4] font-medium">
+                              Match
+                            </p>
+                          </div>
+
+                          {/* Job Content */}
+                          <div className="flex-1 w-full sm:w-auto relative z-10">
+                            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 space-y-2 lg:space-y-0">
+                              <div className="flex-1">
+                                <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-[#4A90A4] group-hover:translate-x-1 transform">
+                                  {job.jobPosition}
+                                </h3>
+                                <p className="text-gray-600 mb-2 transition-colors duration-300 group-hover:text-gray-700 font-medium">
+                                  {job.company.name}
+                                </p>
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-500">
+                                  <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
+                                    <MapPin className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
+                                    <span className="truncate">
+                                      {job.workingLocation}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
+                                    <Clock className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
+                                    <span>{job.workingLocationType}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
+                                    <DollarSign className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" />
+                                    <span className="truncate font-medium">
+                                      {Intl.NumberFormat("id-ID", {
+                                        style: "currency",
+                                        currency: "IDR",
+                                      }).format(job.minSalary)}{" "}
+                                      -{" "}
+                                      {Intl.NumberFormat("id-ID", {
+                                        style: "currency",
+                                        currency: "IDR",
+                                      }).format(job.maxSalary)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-left lg:text-right">
+                                <p className="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
+                                  {new Intl.RelativeTimeFormat("en", {
+                                    numeric: "auto",
+                                  }).format(
+                                    -Math.ceil(
+                                      (Date.now() -
+                                        new Date(job.updatedAt).getTime()) /
+                                        (1000 * 60 * 60 * 24)
+                                    ),
+                                    "day"
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2">
+                              {job.categories.map((category, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="outline"
+                                  className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs"
+                                >
+                                  {category.name}
+                                </Badge>
+                              ))}
                             </div>
                           </div>
-
-                          <div className="flex flex-wrap gap-2">
-                            <Badge
-                              variant="outline"
-                              className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs"
-                            >
-                              React
-                            </Badge>
-                            <Badge
-                              variant="outline"
-                              className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs"
-                            >
-                              TypeScript
-                            </Badge>
-                            <Badge
-                              variant="outline"
-                              className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs"
-                            >
-                              Next.js
-                            </Badge>
-                          </div>
                         </div>
-                      </div>
-                    </CardContent>
+                      </CardContent>
 
-                    {/* Bottom border animation */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                  </Card>
-                </Link>
-              ))}
+                      {/* Bottom border animation */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    </Card>
+                  </Link>
+                ))
+              )}
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-center mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
-              <div className="flex flex-wrap justify-center gap-2">
-                <Button
-                  variant="outline"
-                  disabled
-                  className="transition-all duration-300 text-sm px-3 py-2"
-                >
-                  Previous
-                </Button>
-                <Button className="bg-[#4A90A4] text-white transition-all duration-300 hover:scale-105 text-sm px-3 py-2">
-                  1
-                </Button>
-                <Button
-                  variant="outline"
-                  className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2"
-                >
-                  2
-                </Button>
-                <Button
-                  variant="outline"
-                  className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2"
-                >
-                  3
-                </Button>
-                <Button
-                  variant="outline"
-                  className="transition-all duration-300 hover:scale-105 text-sm px-3 py-2"
-                >
-                  Next
-                </Button>
+            {jobs.length !== 0 && (
+              <div className="flex justify-center mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
+                {pagination && (
+                  <JobsPagination
+                    currentPage={pagination.currentPage}
+                    totalPages={pagination.totalPages}
+                    onPageChange={(page) => handleFilterChange(page)}
+                    hasPrevPage={pagination.hasPrevPage}
+                    hasNextPage={pagination.hasNextPage}
+                  />
+                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
