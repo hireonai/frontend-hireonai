@@ -44,6 +44,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { JobsPagination } from "@/components/jobs-pagination";
 import { ActiveFilters } from "@/components/active-filters";
 import { JobListSkeleton } from "@/components/job-list-skeleton";
+import { UploadCV } from "@/components/upload-cv";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -164,6 +165,7 @@ export default function DashboardPage() {
   const fetchJobsList = useJobsStore((state) => state.fetchJobsList);
   const pagination = useJobsStore((state) => state.pagination);
   const loading = useJobsStore((state) => state.loading);
+  const uploadCV = useProfileStore((state) => state.uploadCV);
 
   useEffect(() => {
     fetchJobsList({
@@ -316,23 +318,17 @@ export default function DashboardPage() {
         </div>
 
         {/* Upload CV Section */}
-        <div>
-          <h3 className="font-semibold mb-4 text-sm lg:text-base">Upload CV</h3>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 lg:p-6 text-center transition-all duration-300 hover:border-[#4A90A4] hover:bg-gray-50 group">
-            <Upload className="w-6 lg:w-8 h-6 lg:h-8 text-gray-400 mx-auto mb-2 transition-all duration-300 group-hover:text-[#4A90A4] group-hover:scale-110" />
-            <p className="text-xs lg:text-sm text-gray-600 mb-2">
-              Drag & drop your CV here
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-[#163B56] text-white hover:bg-white hover:text-[#163B56] transition-all duration-300 hover:scale-105 text-xs lg:text-sm"
-            >
-              Browse Files
-            </Button>
-          </div>
-        </div>
-
+        <UploadCV
+          isLoggedIn={!!profile}
+          onFileChange={handleUploadCV}
+          onRequireLogin={() =>
+            toast({
+              title: "Login Required",
+              description: "You must be logged in to upload your CV.",
+              variant: "error",
+            })
+          }
+        />
         {/* Salary Range */}
         <div>
           <h3 className="font-semibold mb-4 text-sm lg:text-base">
@@ -441,6 +437,34 @@ export default function DashboardPage() {
       </CardContent>
     </Card>
   );
+
+  const handleUploadCV = async (file: File) => {
+    const res = await uploadCV(file);
+    if (res.success) {
+      toast({
+        title: "Success",
+        description: "Your CV has been uploaded.",
+        variant: "success",
+      });
+      await fetchProfile();
+      await fetchJobsList({
+        page: currentPage,
+        category: selectedCategories,
+        experience: selectedExperience,
+        industry: selectedIndustry,
+        minSalary: 0,
+        maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+        keyword: submittedKeyword || undefined,
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: res.message || "Upload failed.",
+        variant: "error",
+      });
+      throw new Error(res.message || "Upload failed");
+    }
+  };
 
   const handleLogout = () => {
     useAuthStore.getState().logout();

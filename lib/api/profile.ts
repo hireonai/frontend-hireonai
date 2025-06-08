@@ -73,3 +73,49 @@ export async function getProfileApi(): Promise<ProfileResponse> {
     };
   }
 }
+
+export interface UploadCVSuccessResponse {
+  statusCode: number;
+  success: true;
+  message: string;
+  data: {
+    cvUrl: string;
+  };
+}
+
+export interface UploadCVErrorResponse {
+  statusCode: number;
+  success: false;
+  message: string;
+  error: string;
+}
+
+export type UploadCVResponse = UploadCVSuccessResponse | UploadCVErrorResponse;
+
+export async function uploadCVApi(file: File): Promise<UploadCVResponse> {
+  const formData = new FormData();
+  formData.append("cv", file);
+
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+
+  try {
+    const res = await axiosInstance.patch("/profile/cv", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return {
+      statusCode: 500,
+      success: false,
+      message: "Internal Server Error.",
+      error: "Internal Server Error",
+    };
+  }
+}
