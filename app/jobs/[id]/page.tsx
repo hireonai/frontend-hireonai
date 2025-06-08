@@ -23,6 +23,7 @@ import { useProfileStore } from "@/store/profile";
 import { useParams, useRouter } from "next/navigation";
 import { useJobsStore } from "@/store/jobs";
 import { useToast } from "@/hooks/use-toast";
+import { JobDetailSkeleton } from "@/components/job-detail-skeleton";
 
 export default function JobDetailPage() {
   const [animateProgress, setAnimateProgress] = useState(false);
@@ -58,6 +59,7 @@ export default function JobDetailPage() {
   const jobId = params?.id as string;
 
   const {
+    loadingDetail,
     jobDetail,
     fetchJobDetailById,
     coverLetterLoading,
@@ -143,7 +145,9 @@ export default function JobDetailPage() {
   };
 
   useEffect(() => {
-    if (jobId) fetchJobDetailById(jobId);
+    if (jobId) {
+      fetchJobDetailById(jobId);
+    }
     clearCoverLetter();
   }, [jobId, fetchJobDetailById]);
 
@@ -183,481 +187,487 @@ export default function JobDetailPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Enhanced Job Header */}
-            <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 transition-all duration-500 hover:shadow-2xl group relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 via-transparent to-[#FF8A50]/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-              <CardContent className="p-6 sm:p-8 relative z-10">
-                <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-6 space-y-4 lg:space-y-0">
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
-                          {jobDetail?.jobPosition}
-                        </h1>
-                        <p className="text-lg sm:text-xl text-gray-600 mb-4 transition-colors duration-300 group-hover:text-gray-700">
-                          {jobDetail?.company?.name}
-                        </p>
+        {/* Main Content */}
+        {loadingDetail || !jobDetail ? (
+          <JobDetailSkeleton />
+        ) : (
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-8">
+              {/* Enhanced Job Header */}
+              <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 transition-all duration-500 hover:shadow-2xl group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 via-transparent to-[#FF8A50]/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                <CardContent className="p-6 sm:p-8 relative z-10">
+                  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-6 space-y-4 lg:space-y-0">
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
+                            {jobDetail?.jobPosition}
+                          </h1>
+                          <p className="text-lg sm:text-xl text-gray-600 mb-4 transition-colors duration-300 group-hover:text-gray-700">
+                            {jobDetail?.company?.name}
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-500 mb-6">
-                      <div className="flex items-center space-x-2 transition-all duration-300 hover:text-[#4A90A4] hover:scale-105 group/item">
-                        <MapPin className="w-4 h-4 transition-transform duration-300 group-hover/item:scale-125" />
-                        <span className="text-sm sm:text-base">
-                          {jobDetail?.workingLocation}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-2 transition-all duration-300 hover:text-[#4A90A4] hover:scale-105 group/item">
-                        <Users className="w-4 h-4 transition-transform duration-300 group-hover/item:scale-125" />
-                        <span className="text-sm sm:text-base">
-                          {jobDetail?.company?.employeesCount} Employees
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-2 transition-all duration-300 hover:text-[#FF8A50] hover:scale-105 group/item">
-                        <DollarSign className="w-4 h-4 transition-transform duration-300 group-hover/item:scale-125" />
-                        <span className="text-sm sm:text-base">
-                          {jobDetail?.minSalary.toLocaleString("id-ID", {
-                            style: "currency",
-                            currency: "IDR",
-                          })}{" "}
-                          -{" "}
-                          {jobDetail?.maxSalary.toLocaleString("id-ID", {
-                            style: "currency",
-                            currency: "IDR",
-                          })}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-2 transition-all duration-300 hover:text-[#4A90A4] hover:scale-105 group/item">
-                        <Clock className="w-4 h-4 transition-transform duration-300 group-hover/item:scale-125" />
-                        <span className="text-sm sm:text-base">
-                          {jobDetail?.employmentType}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    className="bg-[#4A90A4] hover:bg-[#D1E8EC] hover:text-[#4A90A4] px-8 transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 flex-1 sm:flex-none"
-                    onClick={handleAnalyzeCV}
-                    disabled={analyzingCV}
-                  >
-                    {analyzingCV ? (
-                      <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                        Analyzing...
-                      </span>
-                    ) : (
-                      "Analyze CV"
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleToggleBookmark}
-                    disabled={savingBookmark}
-                    className={`transition-all duration-300 hover:scale-105 hover:shadow-md flex items-center space-x-2 ${
-                      isBookmarked
-                        ? "bg-[#FF8A50] text-white border-[#FF8A50]"
-                        : ""
-                    }`}
-                  >
-                    <Bookmark
-                      className={`w-4 h-4 transition-transform duration-300 ${
-                        isBookmarked ? "fill-current" : ""
-                      }`}
-                    />
-                    <span>{isBookmarked ? "Saved" : "Save Job"}</span>
-                  </Button>
-                  {jobDetail?.url ? (
-                    <Link
-                      href={jobDetail.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button
-                        variant="outline"
-                        className="transition-all duration-300 hover:scale-105 hover:shadow-md"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        Apply Job
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      className="transition-all duration-300 hover:scale-105 hover:shadow-md"
-                      disabled
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Apply Job
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Company Description */}
-            <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 transition-all  hover:shadow-xl hover:scale-[1.02] group">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
-                  <div className="overflow-hidden rounded-full w-10 h-10">
-                    <img
-                      src={jobDetail?.company?.profileSrc}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <span>{jobDetail?.company?.name}</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative z-10">
-                  <p className="text-gray-600 mb-4 font-medium transition-colors duration-300 group-hover:text-gray-700">
-                    <strong>{jobDetail?.company?.industry?.name}</strong>
-                  </p>
-                  <p className="text-gray-700 leading-relaxed transition-colors duration-300 group-hover:text-gray-800">
-                    {jobDetail?.company?.description}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Job Description */}
-            <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600 transition-all hover:shadow-xl group">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
-                  <span>Job Description</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h4 className="font-semibold mb-3 flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
-                    <span>Requirements:</span>
-                  </h4>
-                  <ul className="space-y-3 text-gray-700">
-                    {jobDetail?.jobDescList.map((requirement, index) => (
-                      <li
-                        key={index}
-                        className={`flex items-start space-x-3 animate-in fade-in slide-in-from-left-2 duration-500 delay-[${
-                          800 + index * 100
-                        }ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-gray-50 p-2 rounded-lg`}
-                      >
-                        <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0 transition-transform duration-300 group-hover/item:scale-125" />
-                        <span className="transition-colors duration-300 group-hover/item:text-green-700 text-sm sm:text-base">
-                          {requirement}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <Separator className="my-6" />
-
-                <div>
-                  <h4 className="font-semibold mb-3 flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#FF8A50]">
-                    <span>Responsibilities:</span>
-                  </h4>
-                  <ul className="space-y-2 text-gray-700">
-                    {jobDetail?.jobQualificationsList.map(
-                      (responsibility, index) => (
-                        <li
-                          key={index}
-                          className={`animate-in fade-in slide-in-from-right-2 duration-500 delay-[1200 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-gray-50 p-2 rounded-lg text-sm sm:text-base`}
-                        >
-                          • {responsibility}
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Enhanced Right Sidebar */}
-          <div className="space-y-6">
-            {/* Enhanced AI Cover Letter Generator */}
-            <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-300 transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] group relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#B01FCE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="relative z-10">
-                <CardTitle className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-[#B01FCE] rounded-lg flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-lg group-hover:shadow-[#B01FCE]/30">
-                    <Newspaper className="w-4 h-4 text-white transition-transform duration-300 group-hover:rotate-12" />
-                  </div>
-                  <span className="transition-colors duration-300 group-hover:text-[#B01FCE]">
-                    AI Cover Letter Generator
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <p className="text-sm text-gray-600 mb-4 transition-colors duration-300 group-hover:text-gray-700">
-                  Generate a personalized cover letter for this position using
-                  AI.
-                </p>
-                <Textarea
-                  rows={4}
-                  placeholder="Enter your suggestions for the cover letter"
-                  value={coverLetterText}
-                  onChange={(e) => setCoverLetterText(e.target.value)}
-                  disabled={coverLetterLoading}
-                />
-                <Button
-                  className="mt-4 w-full bg-[#B01FCE] hover:bg-white hover:text-[#B01FCE] transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
-                  onClick={handleGenerateCoverLetter}
-                  disabled={coverLetterLoading}
-                >
-                  {coverLetterLoading ? (
-                    <span className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                      Generating...
-                    </span>
-                  ) : (
-                    "Generate Cover Letter"
-                  )}
-                </Button>
-                {coverletterUrl && (
-                  <Button
-                    className="mt-4 w-full bg-white text-[#B01FCE] hover:bg-[#B01FCE] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
-                    variant="outline"
-                    onClick={() => window.open(coverletterUrl, "_blank")}
-                  >
-                    Download Cover Letter
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Enhanced CV Analysis */}
-            <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-500 transition-all duration-500 hover:shadow-2xl group">
-              <CardHeader>
-                <CardTitle className="transition-colors duration-300 group-hover:text-[#4A90A4]">
-                  CV Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {jobDetail?.analysisResult ? (
-                  <>
-                    <div className="text-center">
-                      <div className="relative w-32 h-32 mx-auto mb-2 group-hover:scale-105 transition-transform duration-500">
-                        <svg
-                          className="w-full h-full transform -rotate-90"
-                          viewBox="0 0 100 100"
-                        >
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            stroke="#e5e7eb"
-                            strokeWidth="8"
-                            fill="none"
-                          />
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            stroke={getScoreColor(
-                              jobDetail?.analysisResult?.cvRelevanceScore
-                            )}
-                            strokeWidth="8"
-                            fill="none"
-                            strokeDasharray="0 251.2"
-                            strokeLinecap="round"
-                            style={{
-                              transition: "stroke-dasharray 2s ease-out",
-                              strokeDasharray: animateProgress
-                                ? `${
-                                    (typeof jobDetail?.analysisResult
-                                      ?.cvRelevanceScore === "number"
-                                      ? jobDetail.analysisResult
-                                          .cvRelevanceScore
-                                      : 0) * 2.51
-                                  } 251.2`
-                                : "0 251.2",
-                            }}
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center animate-in fade-in duration-1000 delay-1200">
-                          <span
-                            className={`text-3xl font-bold text-[${getScoreColor(
-                              jobDetail?.analysisResult?.cvRelevanceScore
-                            )}] transition-all duration-300 group-hover:scale-110`}
-                          >
-                            {jobDetail?.analysisResult?.cvRelevanceScore}%
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-500 mb-6">
+                        <div className="flex items-center space-x-2 transition-all duration-300 hover:text-[#4A90A4] hover:scale-105 group/item">
+                          <MapPin className="w-4 h-4 transition-transform duration-300 group-hover/item:scale-125" />
+                          <span className="text-sm sm:text-base">
+                            {jobDetail?.workingLocation}
                           </span>
-                          <span
-                            className={`text-xs text-[${getScoreColor(
-                              jobDetail?.analysisResult?.cvRelevanceScore
-                            )}] font-medium`}
-                          >
-                            Match Score
+                        </div>
+                        <div className="flex items-center space-x-2 transition-all duration-300 hover:text-[#4A90A4] hover:scale-105 group/item">
+                          <Users className="w-4 h-4 transition-transform duration-300 group-hover/item:scale-125" />
+                          <span className="text-sm sm:text-base">
+                            {jobDetail?.company?.employeesCount} Employees
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2 transition-all duration-300 hover:text-[#FF8A50] hover:scale-105 group/item">
+                          <DollarSign className="w-4 h-4 transition-transform duration-300 group-hover/item:scale-125" />
+                          <span className="text-sm sm:text-base">
+                            {jobDetail?.minSalary.toLocaleString("id-ID", {
+                              style: "currency",
+                              currency: "IDR",
+                            })}{" "}
+                            -{" "}
+                            {jobDetail?.maxSalary.toLocaleString("id-ID", {
+                              style: "currency",
+                              currency: "IDR",
+                            })}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2 transition-all duration-300 hover:text-[#4A90A4] hover:scale-105 group/item">
+                          <Clock className="w-4 h-4 transition-transform duration-300 group-hover/item:scale-125" />
+                          <span className="text-sm sm:text-base">
+                            {jobDetail?.employmentType}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <Separator />
-
-                    <div>
-                      <h4 className="font-semibold mb-3 flex items-center space-x-2">
-                        <TrendingUp className="w-4 h-4 text-green-600 transition-transform duration-300 group-hover:scale-125" />
-                        <span className="transition-colors duration-300 group-hover:text-green-600">
-                          Your Strengths
-                        </span>
-                      </h4>
-                      <div className="space-y-3">
-                        {jobDetail?.analysisResult?.skilIdentificationDict &&
-                          Object.entries(
-                            jobDetail.analysisResult.skilIdentificationDict
-                          ).map(([skillName, value], idx) => (
-                            <div
-                              key={skillName}
-                              className="group/skill hover:scale-[1.02] transition-transform duration-300"
-                            >
-                              <div className="flex justify-between text-sm mb-1">
-                                <span className="transition-colors duration-300 group-hover/skill:font-medium">
-                                  {skillName}
-                                </span>
-                                <span
-                                  className="font-medium transition-all duration-300 group-hover/skill:scale-110"
-                                  style={{ color: getScoreColor(value) }}
-                                >
-                                  {animateProgress ? value : 0}%
-                                </span>
-                              </div>
-                              <div className="relative h-2 w-full bg-gray-200 rounded-full overflow-hidden transition-all duration-300 group-hover/skill:h-3">
-                                <div
-                                  className="h-full rounded-full transition-all duration-300"
-                                  style={{
-                                    backgroundColor: getScoreColor(value),
-                                    width: animateProgress ? `${value}%` : "0%",
-                                    transition: `width 1.5s ease-out ${
-                                      idx * 0.3 + 1
-                                    }s`,
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold mt-6 mb-3 flex items-center space-x-2">
-                        <AlertTriangle className="w-4 h-4 text-orange-600 transition-transform duration-300 group-hover:scale-125" />
-                        <span className="transition-colors duration-300 group-hover:text-orange-600">
-                          Areas for Improvement
-                        </span>
-                      </h4>
-                      <ul className="space-y-2 text-sm text-gray-600">
-                        {jobDetail?.analysisResult?.improvements.map(
-                          (improvement, index) => (
-                            <li
-                              key={index}
-                              className={`animate-in fade-in slide-in-from-right-2 duration-500 delay-[1500 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-orange-50 p-2 rounded-lg`}
-                            >
-                              •{" "}
-                              <span className="transition-colors duration-300 group-hover/item:text-orange-700">
-                                {improvement}
-                              </span>
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400">
-                    <FileText className="w-12 h-12 mb-4 text-[#4A90A4]" />
-                    <div className="text-lg font-semibold mb-2">
-                      No Analysis Available
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      You haven't analyzed your CV for this job yet.
-                    </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
 
-            {/* Enhanced Analysis Explanation */}
-            <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
-              <CardHeader>
-                <CardTitle className="transition-colors duration-300 group-hover:text-[#4A90A4]">
-                  Analysis Explanation
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {jobDetail?.analysisResult ? (
-                  <>
-                    <p className="text-sm text-gray-700 leading-relaxed transition-colors duration-300 group-hover:text-gray-800">
-                      {jobDetail?.analysisResult?.explanation}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button
+                      className="bg-[#4A90A4] hover:bg-[#D1E8EC] hover:text-[#4A90A4] px-8 transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 flex-1 sm:flex-none"
+                      onClick={handleAnalyzeCV}
+                      disabled={analyzingCV}
+                    >
+                      {analyzingCV ? (
+                        <span className="flex items-center gap-2">
+                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                          Analyzing...
+                        </span>
+                      ) : (
+                        "Analyze CV"
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleToggleBookmark}
+                      disabled={savingBookmark}
+                      className={`transition-all duration-300 hover:scale-105 hover:shadow-md flex items-center space-x-2 ${
+                        isBookmarked
+                          ? "bg-[#FF8A50] text-white border-[#FF8A50]"
+                          : ""
+                      }`}
+                    >
+                      <Bookmark
+                        className={`w-4 h-4 transition-transform duration-300 ${
+                          isBookmarked ? "fill-current" : ""
+                        }`}
+                      />
+                      <span>{isBookmarked ? "Saved" : "Save Job"}</span>
+                    </Button>
+                    {jobDetail?.url ? (
+                      <Link
+                        href={jobDetail.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button
+                          variant="outline"
+                          className="transition-all duration-300 hover:scale-105 hover:shadow-md"
+                        >
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Apply Job
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="transition-all duration-300 hover:scale-105 hover:shadow-md"
+                        disabled
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Apply Job
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Enhanced Company Description */}
+              <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 transition-all  hover:shadow-xl hover:scale-[1.02] group">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
+                    <div className="overflow-hidden rounded-full w-10 h-10">
+                      <img
+                        src={jobDetail?.company?.profileSrc}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span>{jobDetail?.company?.name}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#4A90A4]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="relative z-10">
+                    <p className="text-gray-600 mb-4 font-medium transition-colors duration-300 group-hover:text-gray-700">
+                      <strong>{jobDetail?.company?.industry?.name}</strong>
                     </p>
+                    <p className="text-gray-700 leading-relaxed transition-colors duration-300 group-hover:text-gray-800">
+                      {jobDetail?.company?.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-                    <div>
-                      <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#FF8A50]">
-                        Suggestions:
-                      </h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
-                        {jobDetail?.analysisResult?.suggestions.map(
-                          (suggestion, index) => (
-                            <li
-                              key={index}
-                              className={`animate-in fade-in slide-in-from-left-2 duration-300 delay-[800 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-orange-50 p-1 rounded`}
-                            >
-                              •{" "}
-                              <span className="transition-colors duration-300 group-hover/item:text-orange-700">
-                                {suggestion}
-                              </span>
-                            </li>
-                          )
-                        )}
-                      </ul>
+              {/* Enhanced Job Description */}
+              <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600 transition-all hover:shadow-xl group">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
+                    <span>Job Description</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
+                      <span>Requirements:</span>
+                    </h4>
+                    <ul className="space-y-3 text-gray-700">
+                      {jobDetail?.jobDescList.map((requirement, index) => (
+                        <li
+                          key={index}
+                          className={`flex items-start space-x-3 animate-in fade-in slide-in-from-left-2 duration-500 delay-[${
+                            800 + index * 100
+                          }ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-gray-50 p-2 rounded-lg`}
+                        >
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0 transition-transform duration-300 group-hover/item:scale-125" />
+                          <span className="transition-colors duration-300 group-hover/item:text-green-700 text-sm sm:text-base">
+                            {requirement}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <Separator className="my-6" />
+
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#FF8A50]">
+                      <span>Responsibilities:</span>
+                    </h4>
+                    <ul className="space-y-2 text-gray-700">
+                      {jobDetail?.jobQualificationsList.map(
+                        (responsibility, index) => (
+                          <li
+                            key={index}
+                            className={`animate-in fade-in slide-in-from-right-2 duration-500 delay-[1200 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-gray-50 p-2 rounded-lg text-sm sm:text-base`}
+                          >
+                            • {responsibility}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="space-y-6">
+              {/* Enhanced AI Cover Letter Generator */}
+              <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-300 transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#B01FCE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <CardHeader className="relative z-10">
+                  <CardTitle className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-[#B01FCE] rounded-lg flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-lg group-hover:shadow-[#B01FCE]/30">
+                      <Newspaper className="w-4 h-4 text-white transition-transform duration-300 group-hover:rotate-12" />
                     </div>
+                    <span className="transition-colors duration-300 group-hover:text-[#B01FCE]">
+                      AI Cover Letter Generator
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="relative z-10">
+                  <p className="text-sm text-gray-600 mb-4 transition-colors duration-300 group-hover:text-gray-700">
+                    Generate a personalized cover letter for this position using
+                    AI.
+                  </p>
+                  <Textarea
+                    rows={4}
+                    placeholder="Enter your suggestions for the cover letter"
+                    value={coverLetterText}
+                    onChange={(e) => setCoverLetterText(e.target.value)}
+                    disabled={coverLetterLoading}
+                  />
+                  <Button
+                    className="mt-4 w-full bg-[#B01FCE] hover:bg-white hover:text-[#B01FCE] transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
+                    onClick={handleGenerateCoverLetter}
+                    disabled={coverLetterLoading}
+                  >
+                    {coverLetterLoading ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        Generating...
+                      </span>
+                    ) : (
+                      "Generate Cover Letter"
+                    )}
+                  </Button>
+                  {coverletterUrl && (
+                    <Button
+                      className="mt-4 w-full bg-white text-[#B01FCE] hover:bg-[#B01FCE] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
+                      variant="outline"
+                      onClick={() => window.open(coverletterUrl, "_blank")}
+                    >
+                      Download Cover Letter
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
 
-                    <div>
-                      <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
-                        Skills Analysis:
-                      </h4>
-                      <div className="space-y-2 text-sm">
-                        {jobDetail?.analysisResult?.skilIdentificationDict &&
-                          Object.entries(
-                            jobDetail.analysisResult.skilIdentificationDict
-                          ).map(([skillName, score], index) => (
-                            <div
-                              key={skillName}
-                              className="flex justify-between hover:scale-105 transition-transform duration-300 group/item cursor-pointer p-1 rounded"
+              {/* Enhanced CV Analysis */}
+              <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-500 transition-all duration-500 hover:shadow-2xl group">
+                <CardHeader>
+                  <CardTitle className="transition-colors duration-300 group-hover:text-[#4A90A4]">
+                    CV Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {jobDetail?.analysisResult ? (
+                    <>
+                      <div className="text-center">
+                        <div className="relative w-32 h-32 mx-auto mb-2 group-hover:scale-105 transition-transform duration-500">
+                          <svg
+                            className="w-full h-full transform -rotate-90"
+                            viewBox="0 0 100 100"
+                          >
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              stroke="#e5e7eb"
+                              strokeWidth="8"
+                              fill="none"
+                            />
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              stroke={getScoreColor(
+                                jobDetail?.analysisResult?.cvRelevanceScore
+                              )}
+                              strokeWidth="8"
+                              fill="none"
+                              strokeDasharray="0 251.2"
+                              strokeLinecap="round"
+                              style={{
+                                transition: "stroke-dasharray 2s ease-out",
+                                strokeDasharray: animateProgress
+                                  ? `${
+                                      (typeof jobDetail?.analysisResult
+                                        ?.cvRelevanceScore === "number"
+                                        ? jobDetail.analysisResult
+                                            .cvRelevanceScore
+                                        : 0) * 2.51
+                                    } 251.2`
+                                  : "0 251.2",
+                              }}
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center animate-in fade-in duration-1000 delay-1200">
+                            <span
+                              className={`text-3xl font-bold text-[${getScoreColor(
+                                jobDetail?.analysisResult?.cvRelevanceScore
+                              )}] transition-all duration-300 group-hover:scale-110`}
                             >
-                              <span className="font-medium">{skillName}</span>
-                              <span
-                                className="font-medium"
-                                style={{ color: getScoreColor(score) }}
+                              {jobDetail?.analysisResult?.cvRelevanceScore}%
+                            </span>
+                            <span
+                              className={`text-xs text-[${getScoreColor(
+                                jobDetail?.analysisResult?.cvRelevanceScore
+                              )}] font-medium`}
+                            >
+                              Match Score
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <Separator />
+
+                      <div>
+                        <h4 className="font-semibold mb-3 flex items-center space-x-2">
+                          <TrendingUp className="w-4 h-4 text-green-600 transition-transform duration-300 group-hover:scale-125" />
+                          <span className="transition-colors duration-300 group-hover:text-green-600">
+                            Your Strengths
+                          </span>
+                        </h4>
+                        <div className="space-y-3">
+                          {jobDetail?.analysisResult?.skilIdentificationDict &&
+                            Object.entries(
+                              jobDetail.analysisResult.skilIdentificationDict
+                            ).map(([skillName, value], idx) => (
+                              <div
+                                key={skillName}
+                                className="group/skill hover:scale-[1.02] transition-transform duration-300"
                               >
-                                {animateProgress ? score : 0}%
-                              </span>
-                            </div>
-                          ))}
+                                <div className="flex justify-between text-sm mb-1">
+                                  <span className="transition-colors duration-300 group-hover/skill:font-medium">
+                                    {skillName}
+                                  </span>
+                                  <span
+                                    className="font-medium transition-all duration-300 group-hover/skill:scale-110"
+                                    style={{ color: getScoreColor(value) }}
+                                  >
+                                    {animateProgress ? value : 0}%
+                                  </span>
+                                </div>
+                                <div className="relative h-2 w-full bg-gray-200 rounded-full overflow-hidden transition-all duration-300 group-hover/skill:h-3">
+                                  <div
+                                    className="h-full rounded-full transition-all duration-300"
+                                    style={{
+                                      backgroundColor: getScoreColor(value),
+                                      width: animateProgress
+                                        ? `${value}%`
+                                        : "0%",
+                                      transition: `width 1.5s ease-out ${
+                                        idx * 0.3 + 1
+                                      }s`,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="font-semibold mt-6 mb-3 flex items-center space-x-2">
+                          <AlertTriangle className="w-4 h-4 text-orange-600 transition-transform duration-300 group-hover:scale-125" />
+                          <span className="transition-colors duration-300 group-hover:text-orange-600">
+                            Areas for Improvement
+                          </span>
+                        </h4>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          {jobDetail?.analysisResult?.improvements.map(
+                            (improvement, index) => (
+                              <li
+                                key={index}
+                                className={`animate-in fade-in slide-in-from-right-2 duration-500 delay-[1500 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-orange-50 p-2 rounded-lg`}
+                              >
+                                •{" "}
+                                <span className="transition-colors duration-300 group-hover/item:text-orange-700">
+                                  {improvement}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400">
+                      <FileText className="w-12 h-12 mb-4 text-[#4A90A4]" />
+                      <div className="text-lg font-semibold mb-2">
+                        No Analysis Available
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        You haven't analyzed your CV for this job yet.
                       </div>
                     </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400">
-                    <FileText className="w-12 h-12 mb-2 text-[#4A90A4]" />
-                    <div className="text-lg font-semibold mb-2">
-                      No analysis result yet
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Enhanced Analysis Explanation */}
+              <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+                <CardHeader>
+                  <CardTitle className="transition-colors duration-300 group-hover:text-[#4A90A4]">
+                    Analysis Explanation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {jobDetail?.analysisResult ? (
+                    <>
+                      <p className="text-sm text-gray-700 leading-relaxed transition-colors duration-300 group-hover:text-gray-800">
+                        {jobDetail?.analysisResult?.explanation}
+                      </p>
+
+                      <div>
+                        <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#FF8A50]">
+                          Suggestions:
+                        </h4>
+                        <ul className="space-y-1 text-sm text-gray-600">
+                          {jobDetail?.analysisResult?.suggestions.map(
+                            (suggestion, index) => (
+                              <li
+                                key={index}
+                                className={`animate-in fade-in slide-in-from-left-2 duration-300 delay-[800 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-orange-50 p-1 rounded`}
+                              >
+                                •{" "}
+                                <span className="transition-colors duration-300 group-hover/item:text-orange-700">
+                                  {suggestion}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+
+                      <div>
+                        <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
+                          Skills Analysis:
+                        </h4>
+                        <div className="space-y-2 text-sm">
+                          {jobDetail?.analysisResult?.skilIdentificationDict &&
+                            Object.entries(
+                              jobDetail.analysisResult.skilIdentificationDict
+                            ).map(([skillName, score], index) => (
+                              <div
+                                key={skillName}
+                                className="flex justify-between hover:scale-105 transition-transform duration-300 group/item cursor-pointer p-1 rounded"
+                              >
+                                <span className="font-medium">{skillName}</span>
+                                <span
+                                  className="font-medium"
+                                  style={{ color: getScoreColor(score) }}
+                                >
+                                  {animateProgress ? score : 0}%
+                                </span>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400">
+                      <FileText className="w-12 h-12 mb-2 text-[#4A90A4]" />
+                      <div className="text-lg font-semibold mb-2">
+                        No analysis result yet
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Please analyze your CV to see detailed suggestions and
+                        explanations.
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      Please analyze your CV to see detailed suggestions and
-                      explanations.
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Enhanced Right Sidebar */}
       </div>
 
       {/* Animations for progress/circle graph */}

@@ -19,6 +19,7 @@ interface JobsState {
   loading: boolean;
   error: string | null;
   fetchJobsList: (params?: JobsQueryParams) => Promise<void>;
+  loadingDetail: boolean;
   jobDetail: JobDetail | null;
   fetchJobDetailById: (
     jobId: string
@@ -42,7 +43,6 @@ export const useJobsStore = create<JobsState>((set, get) => ({
   fetchJobsList: async (params) => {
     set({ loading: true, error: null });
     try {
-      console.log(params);
       const res = await fetchJobs(params);
       if (res.success) {
         set({
@@ -67,14 +67,16 @@ export const useJobsStore = create<JobsState>((set, get) => ({
       });
     }
   },
+  loadingDetail: false,
   jobDetail: null,
   fetchJobDetailById: async (jobId: string) => {
+    set({ loadingDetail: true, jobDetail: null });
     const res: JobDetailResponse = await fetchJobDetail(jobId);
     if (res.success) {
-      set({ jobDetail: res.data });
+      set({ jobDetail: res.data, loadingDetail: false });
       return { success: true, message: res.message };
     } else {
-      set({ jobDetail: null, error: res.message });
+      set({ jobDetail: null, error: res.message, loadingDetail: false });
       return {
         success: false,
         message: res.message || "Failed to fetch job detail.",
