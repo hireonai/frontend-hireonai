@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +38,6 @@ import {
 import { useAuthStore } from "@/store/auth";
 import { useProfileStore } from "@/store/profile";
 import { useReferenciesStore } from "@/store/referencies";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useJobsStore } from "@/store/jobs";
 import { Pagination } from "@/components/ui/pagination";
@@ -46,19 +46,65 @@ import { ActiveFilters } from "@/components/active-filters";
 import { JobListSkeleton } from "@/components/job-list-skeleton";
 
 export default function DashboardPage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [salaryRange, setSalaryRange] = useState([0]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [currentPage, setCurrentPage] = useState(() =>
+    parseInt(searchParams.get("page") || "1", 10)
+  );
+  const [salaryRange, setSalaryRange] = useState(() => [
+    parseInt(searchParams.get("maxSalary") || "0", 10),
+  ]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
+    const categories = searchParams.get("categories");
+    return categories ? categories.split(",") : [];
+  });
   const [selectedExperience, setSelectedExperience] = useState<
     string | undefined
-  >();
-  const [selectedIndustry, setSelectedIndustry] = useState<
-    string | undefined
-  >();
+  >(() => searchParams.get("experience") || undefined);
+  const [selectedIndustry, setSelectedIndustry] = useState<string | undefined>(
+    () => searchParams.get("industry") || undefined
+  );
   const [showFilters, setShowFilters] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [submittedKeyword, setSubmittedKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState(
+    () => searchParams.get("keyword") || ""
+  );
+  const [submittedKeyword, setSubmittedKeyword] = useState(
+    () => searchParams.get("keyword") || ""
+  );
+
   const debouncedSearchKeyword = useDebounce(searchKeyword, 300);
+
+  const [isPending, startTransition] = useTransition();
+
+  const updateUrlParams = (
+    params: Record<string, string | string[] | number | undefined>
+  ) => {
+    const url = new URL(window.location.href);
+
+    url.searchParams.delete("page");
+    url.searchParams.delete("keyword");
+    url.searchParams.delete("categories");
+    url.searchParams.delete("experience");
+    url.searchParams.delete("industry");
+    url.searchParams.delete("maxSalary");
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "" && value !== 0) {
+        if (Array.isArray(value)) {
+          if (value.length > 0) {
+            url.searchParams.set(key, value.join(","));
+          }
+        } else {
+          url.searchParams.set(key, value.toString());
+        }
+      }
+    });
+
+    startTransition(() => {
+      router.replace(url.pathname + url.search, { scroll: false });
+    });
+  };
 
   useEffect(() => {
     setSearchKeyword(debouncedSearchKeyword);
@@ -93,7 +139,6 @@ export default function DashboardPage() {
 
   const profile = useProfileStore((state) => state.profile);
   const fetchProfile = useProfileStore((state) => state.fetchProfile);
-  const router = useRouter();
   const { toast } = useToast();
 
   const jobCategories = useReferenciesStore((state) => state.jobCategories);
@@ -130,17 +175,33 @@ export default function DashboardPage() {
       maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
       keyword: submittedKeyword || undefined,
     });
+  }, [
+    currentPage,
+    selectedCategories,
+    selectedExperience,
+    selectedIndustry,
+    salaryRange,
+    submittedKeyword,
+    fetchJobsList,
+  ]);
+
+  useEffect(() => {
     fetchProfile();
     fetchJobCategories();
     fetchJobMinExperiences();
     fetchCompanyIndustries();
-    handleFilterChange(currentPage);
   }, [
-    currentPage,
-    fetchJobsList,
+    fetchProfile,
     fetchJobCategories,
     fetchJobMinExperiences,
     fetchCompanyIndustries,
+  ]);
+
+  useEffect(() => {
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  }, [
     selectedCategories,
     selectedExperience,
     selectedIndustry,
@@ -148,26 +209,94 @@ export default function DashboardPage() {
     submittedKeyword,
   ]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategories, selectedExperience, selectedIndustry, salaryRange]);
-
   const handleFilterChange = (page: number) => {
-    fetchJobsList({
+    setCurrentPage(page);
+
+    updateUrlParams({
       page,
-      category: selectedCategories,
+      keyword: submittedKeyword,
+      categories: selectedCategories,
       experience: selectedExperience,
       industry: selectedIndustry,
-      minSalary: 0,
       maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
-      keyword: searchKeyword,
     });
-    setCurrentPage(page);
   };
 
   const handleSearch = () => {
     setSubmittedKeyword(searchKeyword);
     setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: selectedCategories,
+      experience: selectedExperience,
+      industry: selectedIndustry,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+    });
+  };
+
+  const handleCategoryChange = (categoryId: string, checked: boolean) => {
+    let newCategories;
+    if (checked) {
+      newCategories = [...selectedCategories, categoryId];
+    } else {
+      newCategories = selectedCategories.filter((c) => c !== categoryId);
+    }
+
+    setSelectedCategories(newCategories);
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: newCategories,
+      experience: selectedExperience,
+      industry: selectedIndustry,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+    });
+  };
+
+  const handleExperienceChange = (value: string) => {
+    setSelectedExperience(value);
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: selectedCategories,
+      experience: value,
+      industry: selectedIndustry,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+    });
+  };
+
+  const handleIndustryChange = (value: string) => {
+    setSelectedIndustry(value);
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: selectedCategories,
+      experience: selectedExperience,
+      industry: value,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+    });
+  };
+
+  const handleSalaryRangeChange = (value: number[]) => {
+    setSalaryRange(value);
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: selectedCategories,
+      experience: selectedExperience,
+      industry: selectedIndustry,
+      maxSalary: value[0] !== 0 ? value[0] : undefined,
+    });
   };
 
   const FilterSection = () => (
@@ -212,8 +341,8 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <Slider
               value={salaryRange}
-              onValueChange={setSalaryRange}
-              max={7000000}
+              onValueChange={handleSalaryRangeChange}
+              max={70000000}
               step={500000}
               className="w-full"
             />
@@ -247,7 +376,7 @@ export default function DashboardPage() {
           </h3>
           <Select
             value={selectedExperience}
-            onValueChange={(value) => setSelectedExperience(value)}
+            onValueChange={handleExperienceChange}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select experience" />
@@ -276,17 +405,9 @@ export default function DashboardPage() {
                 <Checkbox
                   id={category._id}
                   checked={selectedCategories.includes(category._id)}
-                  onCheckedChange={(checked) => {
-                    let newArr;
-                    if (checked) {
-                      newArr = [...selectedCategories, category._id];
-                    } else {
-                      newArr = selectedCategories.filter(
-                        (c) => c !== category._id
-                      );
-                    }
-                    setSelectedCategories(newArr);
-                  }}
+                  onCheckedChange={(checked) =>
+                    handleCategoryChange(category._id, checked as boolean)
+                  }
                 />
                 <label
                   htmlFor={category._id}
@@ -304,10 +425,7 @@ export default function DashboardPage() {
           <h3 className="font-semibold mb-4 text-sm lg:text-base">
             Company Industry
           </h3>
-          <Select
-            value={selectedIndustry}
-            onValueChange={(value) => setSelectedIndustry(value)}
-          >
+          <Select value={selectedIndustry} onValueChange={handleIndustryChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select industry" />
             </SelectTrigger>
@@ -333,6 +451,90 @@ export default function DashboardPage() {
       variant: "success",
     });
     router.push("/");
+  };
+
+  const handleResetAllFilters = () => {
+    setSearchKeyword("");
+    setSubmittedKeyword("");
+    setSalaryRange([0]);
+    setSelectedExperience(undefined);
+    setSelectedIndustry(undefined);
+    setSelectedCategories([]);
+    setCurrentPage(1);
+
+    router.replace(window.location.pathname, { scroll: false });
+  };
+
+  const handleRemoveKeyword = () => {
+    setSearchKeyword("");
+    setSubmittedKeyword("");
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: undefined,
+      categories: selectedCategories,
+      experience: selectedExperience,
+      industry: selectedIndustry,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+    });
+  };
+
+  const handleRemoveSalary = () => {
+    setSalaryRange([0]);
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: selectedCategories,
+      experience: selectedExperience,
+      industry: selectedIndustry,
+      maxSalary: undefined,
+    });
+  };
+
+  const handleRemoveExperience = () => {
+    setSelectedExperience(undefined);
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: selectedCategories,
+      experience: undefined,
+      industry: selectedIndustry,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+    });
+  };
+
+  const handleRemoveIndustry = () => {
+    setSelectedIndustry(undefined);
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: selectedCategories,
+      experience: selectedExperience,
+      industry: undefined,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+    });
+  };
+
+  const handleRemoveCategory = (categoryId: string) => {
+    const newCategories = selectedCategories.filter((c) => c !== categoryId);
+    setSelectedCategories(newCategories);
+    setCurrentPage(1);
+
+    updateUrlParams({
+      page: 1,
+      keyword: submittedKeyword,
+      categories: newCategories,
+      experience: selectedExperience,
+      industry: selectedIndustry,
+      maxSalary: salaryRange[0] !== 0 ? salaryRange[0] : undefined,
+    });
   };
 
   return (
@@ -468,15 +670,10 @@ export default function DashboardPage() {
         <div className="mb-6 lg:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative group">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors duration-300 group-focus-within:text-[#4A90A4]" />{" "}
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors duration-300 group-focus-within:text-[#4A90A4]" />
               <Input
-                defaultValue={searchKeyword}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  requestAnimationFrame(() => {
-                    setSearchKeyword(value);
-                  });
-                }}
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
                 placeholder="Search for jobs, companies, or skills..."
                 className="pl-10 h-12 transition-all duration-300 focus:ring-2 focus:ring-[#4A90A4]/20 focus:border-[#4A90A4]"
               />
@@ -501,43 +698,19 @@ export default function DashboardPage() {
 
         <ActiveFilters
           submittedKeyword={submittedKeyword}
-          onRemoveKeyword={() => {
-            setSearchKeyword("");
-            setSubmittedKeyword("");
-            setCurrentPage(1);
-          }}
+          onRemoveKeyword={handleRemoveKeyword}
           salaryRange={salaryRange}
-          onRemoveSalary={() => {
-            setSalaryRange([0, 0]);
-            setCurrentPage(1);
-          }}
+          onRemoveSalary={handleRemoveSalary}
           selectedExperience={selectedExperience}
-          onRemoveExperience={() => {
-            setSelectedExperience(undefined);
-            setCurrentPage(1);
-          }}
+          onRemoveExperience={handleRemoveExperience}
           jobMinExperiences={jobMinExperiences}
           selectedIndustry={selectedIndustry}
-          onRemoveIndustry={() => {
-            setSelectedIndustry(undefined);
-            setCurrentPage(1);
-          }}
+          onRemoveIndustry={handleRemoveIndustry}
           companyIndustries={companyIndustries}
           selectedCategories={selectedCategories}
-          onRemoveCategory={(id) => {
-            setSelectedCategories(selectedCategories.filter((c) => c !== id));
-            setCurrentPage(1);
-          }}
+          onRemoveCategory={handleRemoveCategory}
           jobCategories={jobCategories}
-          onResetAll={() => {
-            setSearchKeyword("");
-            setSubmittedKeyword("");
-            setSalaryRange([0, 0]);
-            setSelectedExperience(undefined);
-            setSelectedIndustry(undefined);
-            setSelectedCategories([]);
-            setCurrentPage(1);
-          }}
+          onResetAll={handleResetAllFilters}
         />
 
         {/* Job Match Notification */}
@@ -615,22 +788,11 @@ export default function DashboardPage() {
             <div className="space-y-4 lg:space-y-6">
               {loading ? (
                 <JobListSkeleton count={5} />
-              ) : jobs.length === 0 ? (
-                <Card className="h-1/2 flex items-center justify-center py-16">
-                  <div className="text-center text-gray-400">
-                    <div className="text-lg font-semibold mb-1">
-                      Job not found
-                    </div>
-                    <div className="text-sm">
-                      Try adjusting your filters or search keyword.
-                    </div>
-                  </div>
-                </Card>
-              ) : (
+              ) : jobs.length === 0 ? null : (
                 jobs.map((job, index) => (
                   <Link
                     key={index}
-                    href={`/jobs/${index + 1}`}
+                    href={`/jobs/${job._id || index + 1}`}
                     className="block"
                   >
                     <Card
@@ -679,7 +841,7 @@ export default function DashboardPage() {
                                   {job.jobPosition}
                                 </h3>
                                 <p className="text-gray-600 mb-2 transition-colors duration-300 group-hover:text-gray-700 font-medium">
-                                  {job.company.name}
+                                  {job.company?.name}
                                 </p>
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-500">
                                   <div className="flex items-center space-x-1 transition-all duration-300 group-hover:text-gray-700 group-hover:scale-105">
@@ -725,9 +887,9 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="flex flex-wrap gap-2">
-                              {job.categories.map((category, index) => (
+                              {job.categories?.map((category, idx) => (
                                 <Badge
-                                  key={index}
+                                  key={idx}
                                   variant="outline"
                                   className="transition-all duration-300 group-hover:bg-[#4A90A4] group-hover:text-white group-hover:scale-105 text-xs"
                                 >
@@ -748,9 +910,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Pagination */}
-            {jobs.length !== 0 && (
-              <div className="flex justify-center mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
-                {pagination && (
+            <div className="w-full mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000">
+              <div className="flex flex-row flex-wrap justify-center w-full gap-2">
+                {pagination && jobs.length > 0 && (
                   <JobsPagination
                     currentPage={pagination.currentPage}
                     totalPages={pagination.totalPages}
@@ -760,7 +922,7 @@ export default function DashboardPage() {
                   />
                 )}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
