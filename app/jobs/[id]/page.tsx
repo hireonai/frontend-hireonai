@@ -280,19 +280,14 @@ export default function JobDetailPage() {
                       <span>{isBookmarked ? "Saved" : "Save Job"}</span>
                     </Button>
                     {jobDetail?.url ? (
-                      <Link
-                        href={jobDetail.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Button
+                        variant="outline"
+                        className="transition-all duration-300 hover:scale-105 hover:shadow-md"
+                        onClick={() => window.open(jobDetail?.url, "_blank")}
                       >
-                        <Button
-                          variant="outline"
-                          className="transition-all duration-300 hover:scale-105 hover:shadow-md"
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Apply Job
-                        </Button>
-                      </Link>
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Apply Job
+                      </Button>
                     ) : (
                       <Button
                         variant="outline"
