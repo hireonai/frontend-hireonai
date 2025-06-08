@@ -228,7 +228,7 @@ export default function DashboardPage() {
 
     updateUrlParams({
       page: 1,
-      keyword: submittedKeyword,
+      keyword: searchKeyword,
       categories: selectedCategories,
       experience: selectedExperience,
       industry: selectedIndustry,
