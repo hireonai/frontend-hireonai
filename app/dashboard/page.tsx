@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Search,
-  Upload,
   MapPin,
   Clock,
   DollarSign,
@@ -40,7 +39,6 @@ import { useProfileStore } from "@/store/profile";
 import { useReferenciesStore } from "@/store/referencies";
 import { useToast } from "@/hooks/use-toast";
 import { useJobsStore } from "@/store/jobs";
-import { Pagination } from "@/components/ui/pagination";
 import { JobsPagination } from "@/components/jobs-pagination";
 import { ActiveFilters } from "@/components/active-filters";
 import { JobListSkeleton } from "@/components/job-list-skeleton";

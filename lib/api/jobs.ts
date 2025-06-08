@@ -205,3 +205,82 @@ export async function fetchJobDetail(
     };
   }
 }
+
+export interface GenerateCoverLetterResponseSuccess {
+  statusCode: number;
+  success: true;
+  message: string;
+  data: {
+    coverletterUrl: string;
+  };
+}
+
+export interface GenerateCoverLetterResponseError {
+  statusCode: number;
+  success: false;
+  message: string;
+  error: string;
+}
+
+export type GenerateCoverLetterResponse =
+  | GenerateCoverLetterResponseSuccess
+  | GenerateCoverLetterResponseError;
+
+export async function generateCoverLetterApi(
+  jobId: string,
+  specificRequest: string
+): Promise<GenerateCoverLetterResponse> {
+  try {
+    const res = await axiosInstance.post(
+      `/jobs/${jobId}/cover-letter`,
+      { specificRequest },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return {
+      statusCode: 500,
+      success: false,
+      message: "Internal Server Error.",
+      error: "Internal Server Error",
+    };
+  }
+}
+
+export interface CvAnalysisResponseSuccess {
+  statusCode: number;
+  success: true;
+  message: string;
+  data: AnalysisResult;
+}
+
+export interface CvAnalysisResponseError {
+  statusCode: number;
+  success: false;
+  message: string;
+  error: string;
+}
+
+export type CvAnalysisResponse =
+  | CvAnalysisResponseSuccess
+  | CvAnalysisResponseError;
+
+export async function analyzeCvApi(jobId: string): Promise<CvAnalysisResponse> {
+  try {
+    const res = await axiosInstance.post(`/jobs/${jobId}/analyze-cv`);
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return {
+      statusCode: 500,
+      success: false,
+      message: "Internal Server Error.",
+      error: "Internal Server Error",
+    };
+  }
+}

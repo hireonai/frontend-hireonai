@@ -2,8 +2,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {
   MapPin,
@@ -14,27 +12,13 @@ import {
   FileText,
   TrendingUp,
   AlertTriangle,
-  ChevronDown,
-  User,
   Bookmark,
-  Share2,
-  Building,
-  Calendar,
-  Award,
-  Target,
-  Star,
   ExternalLink,
   ArrowLeft,
   Newspaper,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useProfileStore } from "@/store/profile";
 import { useParams, useRouter } from "next/navigation";
 import { useJobsStore } from "@/store/jobs";
@@ -43,30 +27,14 @@ import { useToast } from "@/hooks/use-toast";
 export default function JobDetailPage() {
   const [animateProgress, setAnimateProgress] = useState(false);
   const [coverLetterText, setCoverLetterText] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    // Simulate page loading
     const timer = setTimeout(() => {
-      // Trigger progress animations after content loads
       setTimeout(() => setAnimateProgress(true), 500);
     }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
-
-  const handleGenerateCoverLetter = () => {
-    setIsGenerating(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsGenerating(false);
-    }, 3000);
-  };
-
-  const handleSaveJob = () => {
-    setIsSaved(!isSaved);
-  };
 
   const profile = useProfileStore((state) => state.profile);
   const fetchProfile = useProfileStore((state) => state.fetchProfile);
@@ -89,11 +57,51 @@ export default function JobDetailPage() {
   const params = useParams();
   const jobId = params?.id as string;
 
-  const { jobDetail, fetchJobDetailById } = useJobsStore();
+  const {
+    jobDetail,
+    fetchJobDetailById,
+    coverLetterLoading,
+    coverletterUrl,
+    generateCoverLetter,
+    clearCoverLetter,
+    analyzingCV,
+    analyzeCV,
+  } = useJobsStore();
 
   const isBookmarked = !!profile?.bookmarkJobs?.find(
     (job) => job._id === jobId
   );
+
+  const handleAnalyzeCV = async () => {
+    if (!jobId) return;
+    const res = await analyzeCV(jobId);
+    toast({
+      title: "Success",
+      description: res.message,
+      variant: "success",
+    });
+    if (!res.success) {
+      toast({
+        title: "Error",
+        description: res.message,
+        variant: "error",
+      });
+      await fetchJobDetailById(jobId);
+    }
+  };
+
+  const handleGenerateCoverLetter = async () => {
+    const result = await generateCoverLetter(jobId, coverLetterText);
+    if (result.success && result.url) {
+      window.open(result.url, "_blank");
+    } else {
+      toast({
+        title: "Error",
+        description: result.message,
+        variant: "error",
+      });
+    }
+  };
 
   const handleToggleBookmark = async () => {
     setSavingBookmark(true);
@@ -136,6 +144,7 @@ export default function JobDetailPage() {
 
   useEffect(() => {
     if (jobId) fetchJobDetailById(jobId);
+    clearCoverLetter();
   }, [jobId, fetchJobDetailById]);
 
   const getScoreColor = (score: number | null | undefined) => {
@@ -232,8 +241,19 @@ export default function JobDetailPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button className="bg-[#4A90A4] hover:bg-[#D1E8EC] hover:text-[#4A90A4] px-8 transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 flex-1 sm:flex-none">
-                    Analyze CV
+                  <Button
+                    className="bg-[#4A90A4] hover:bg-[#D1E8EC] hover:text-[#4A90A4] px-8 transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 flex-1 sm:flex-none"
+                    onClick={handleAnalyzeCV}
+                    disabled={analyzingCV}
+                  >
+                    {analyzingCV ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        Analyzing...
+                      </span>
+                    ) : (
+                      "Analyze CV"
+                    )}
                   </Button>
                   <Button
                     variant="outline"
@@ -380,25 +400,34 @@ export default function JobDetailPage() {
                 </p>
                 <Textarea
                   rows={4}
-                  className="mb-6 transition-all duration-300 focus:ring-2 focus:ring-[#B01FCE]/50 focus:scale-[1.02]"
                   placeholder="Enter your suggestions for the cover letter"
                   value={coverLetterText}
                   onChange={(e) => setCoverLetterText(e.target.value)}
+                  disabled={coverLetterLoading}
                 />
                 <Button
-                  className="w-full bg-[#B01FCE] hover:bg-white hover:text-[#B01FCE] transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
+                  className="mt-4 w-full bg-[#B01FCE] hover:bg-white hover:text-[#B01FCE] transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
                   onClick={handleGenerateCoverLetter}
-                  disabled={isGenerating}
+                  disabled={coverLetterLoading}
                 >
-                  {isGenerating ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Generating...</span>
-                    </div>
+                  {coverLetterLoading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      Generating...
+                    </span>
                   ) : (
                     "Generate Cover Letter"
                   )}
                 </Button>
+                {coverletterUrl && (
+                  <Button
+                    className="mt-4 w-full bg-white text-[#B01FCE] hover:bg-[#B01FCE] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
+                    variant="outline"
+                    onClick={() => window.open(coverletterUrl, "_blank")}
+                  >
+                    Download Cover Letter
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
