@@ -24,6 +24,10 @@ jobs:
           node-version: "18"
           cache: "npm"
 
+      - name: Create .env file
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
+
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
@@ -43,9 +47,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build \
-            --build-arg NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
-            -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} .
+          docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} .
           docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }}
 
       - name: Deploy to Cloud Run
