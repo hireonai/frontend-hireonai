@@ -119,3 +119,69 @@ export async function uploadCVApi(file: File): Promise<UploadCVResponse> {
     };
   }
 }
+
+export interface UpdatedBookmarkJobs {
+  updatedBookmarkJobs: [];
+}
+
+export interface BookmarkJobResponseSuccess {
+  statusCode: number;
+  success: true;
+  message: string;
+  data: UpdatedBookmarkJobs;
+}
+
+export interface BookmarkJobResponseError {
+  statusCode: number;
+  success: false;
+  message: string;
+  error: string;
+}
+
+export type BookmarkJobResponse =
+  | BookmarkJobResponseSuccess
+  | BookmarkJobResponseError;
+
+export async function bookmarkJobApi(
+  jobId: string
+): Promise<BookmarkJobResponse> {
+  try {
+    const res = await axiosInstance.post(
+      "/profile/bookmark-job",
+      { jobId },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return {
+      statusCode: 500,
+      success: false,
+      message: "Internal Server Error.",
+      error: "Internal Server Error",
+    };
+  }
+}
+
+export async function unbookmarkJobApi(
+  jobId: string
+): Promise<BookmarkJobResponse> {
+  try {
+    const res = await axiosInstance.delete(`/profile/bookmark-job/${jobId}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return {
+      statusCode: 500,
+      success: false,
+      message: "Internal Server Error.",
+      error: "Internal Server Error",
+    };
+  }
+}

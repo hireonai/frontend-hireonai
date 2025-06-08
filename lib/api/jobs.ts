@@ -126,3 +126,82 @@ export async function fetchJobs(
     };
   }
 }
+
+export interface CompanyJobDetail {
+  _id: string;
+  name: string;
+  description: string;
+  profileSrc: string;
+  location: string;
+  employeesCount: string;
+  createdAt: string;
+  updatedAt: string;
+  industry: JobIndustry;
+}
+
+export interface AnalysisResult {
+  _id: string;
+  cvRelevanceScore: number;
+  improvements: string[];
+  skilIdentificationDict: Record<string, string>;
+  explanation: string;
+  suggestions: string[];
+}
+
+export interface JobDetail {
+  _id: string;
+  categories: JobCategory[];
+  url: string;
+  jobPosition: string;
+  employmentType: string;
+  workingLocationType: string;
+  workingLocation: string;
+  minSalary: number;
+  maxSalary: number;
+  jobDescList: string[];
+  jobQualificationsList: string[];
+  createdAt: string;
+  updatedAt: string;
+  company: CompanyJobDetail;
+  minExperience: JobExperience;
+  analysisResult: AnalysisResult | null;
+}
+
+export interface JobDetailSuccessResponse {
+  statusCode: number;
+  success: true;
+  message: string;
+  data: JobDetail;
+}
+
+export interface JobDetailErrorResponse {
+  statusCode: number;
+  success: false;
+  message: string;
+  error: string;
+}
+
+export type JobDetailResponse =
+  | JobDetailSuccessResponse
+  | JobDetailErrorResponse;
+
+export async function fetchJobDetail(
+  jobId: string
+): Promise<JobDetailResponse> {
+  try {
+    const res = await axiosInstance.get(`/jobs/${jobId}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return {
+      statusCode: 500,
+      success: false,
+      message: "Internal Server Error.",
+      error: "Internal Server Error",
+    };
+  }
+}
