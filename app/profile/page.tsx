@@ -556,7 +556,7 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <TagInput
                       id="jobCategories"
-                      label="Job Categories of Interest"
+                      label="Tag Preferences"
                       value={tags}
                       onChange={setTags}
                       disabled={!isEditing}
