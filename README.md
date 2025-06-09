@@ -20,15 +20,15 @@ This is the frontend client for the HireonAI platform. It is a modern, responsiv
 
 ## 📦 Tech Stack
 
-| Category         | Package                                             |
-| ---------------- | --------------------------------------------------- |
-| Framework        | Next.js, React                                      |
-| Styling          | Tailwind CSS, shadcn/ui                             |
-| State Management | zustand                                             |
-| Form Handling    | react-hook-form                                     |
-| Schema Validation| zod                                                 |
-| Data Fetching    | axios                                               |
-| UI & UX          | figma, shadcn/ui                                    |
+| Category          | Package                 |
+| ----------------- | ----------------------- |
+| Framework         | Next.js, React          |
+| Styling           | Tailwind CSS, shadcn/ui |
+| State Management  | zustand                 |
+| Form Handling     | react-hook-form         |
+| Schema Validation | zod                     |
+| Data Fetching     | axios                   |
+| UI & UX           | figma, shadcn/ui        |
 
 ---
 
@@ -68,7 +68,13 @@ Copy the .env.example file to .env and modify it according to your needs. The mo
 
 ```bash
 # URL for the backend API
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
+NEXT_PUBLIC_API_URL={{ API_URL }}
+
+# URL for the ML service
+NEXT_PUBLIC_ML_SERVICE_URL={{ ML_SERVICE_URL }}
+
+# Secret key for the ML service
+NEXT_PUBLIC_ML_SERVICE_SECRET_KEY={{ ML_SERVICE_SECRET_KEY }}
 
 ```
 
@@ -92,7 +98,9 @@ src/
 ---
 
 ## 📄 Running Locally
+
 Once the environment variables are set up and dependencies are installed, you can start the development server:
+
 ```
 npm run dev
 ```
