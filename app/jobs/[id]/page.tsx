@@ -378,7 +378,58 @@ export default function JobDetailPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Enhanced Analysis Explanation */}
+              <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+                <CardHeader>
+                  <CardTitle className="transition-colors duration-300 group-hover:text-[#4A90A4]">
+                    Analysis Explanation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {jobDetail?.analysisResult ? (
+                    <>
+                      <p className="text-sm text-gray-700 leading-relaxed transition-colors duration-300 group-hover:text-gray-800">
+                        {jobDetail?.analysisResult?.explanation}
+                      </p>
+
+                      <div>
+                        <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#FF8A50]">
+                          Suggestions:
+                        </h4>
+                        <ul className="space-y-1 text-sm text-gray-600">
+                          {jobDetail?.analysisResult?.suggestions.map(
+                            (suggestion, index) => (
+                              <li
+                                key={index}
+                                className={`animate-in fade-in slide-in-from-left-2 duration-300 delay-[800 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-orange-50 p-1 rounded`}
+                              >
+                                •{" "}
+                                <span className="transition-colors duration-300 group-hover/item:text-orange-700">
+                                  {suggestion}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400">
+                      <FileText className="w-12 h-12 mb-2 text-[#4A90A4]" />
+                      <div className="text-lg font-semibold mb-2">
+                        No analysis result yet
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Please analyze your CV to see detailed suggestions and
+                        explanations.
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
+
             <div className="space-y-6">
               {/* Enhanced AI Cover Letter Generator */}
               <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-300 transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] group relative overflow-hidden">
@@ -578,81 +629,6 @@ export default function JobDetailPage() {
                       </div>
                       <div className="text-sm text-gray-500">
                         You haven't analyzed your CV for this job yet.
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Enhanced Analysis Explanation */}
-              <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
-                <CardHeader>
-                  <CardTitle className="transition-colors duration-300 group-hover:text-[#4A90A4]">
-                    Analysis Explanation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {jobDetail?.analysisResult ? (
-                    <>
-                      <p className="text-sm text-gray-700 leading-relaxed transition-colors duration-300 group-hover:text-gray-800">
-                        {jobDetail?.analysisResult?.explanation}
-                      </p>
-
-                      <div>
-                        <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#FF8A50]">
-                          Suggestions:
-                        </h4>
-                        <ul className="space-y-1 text-sm text-gray-600">
-                          {jobDetail?.analysisResult?.suggestions.map(
-                            (suggestion, index) => (
-                              <li
-                                key={index}
-                                className={`animate-in fade-in slide-in-from-left-2 duration-300 delay-[800 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-orange-50 p-1 rounded`}
-                              >
-                                •{" "}
-                                <span className="transition-colors duration-300 group-hover/item:text-orange-700">
-                                  {suggestion}
-                                </span>
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
-                          Skills Analysis:
-                        </h4>
-                        <div className="space-y-2 text-sm">
-                          {jobDetail?.analysisResult?.skilIdentificationDict &&
-                            Object.entries(
-                              jobDetail.analysisResult.skilIdentificationDict
-                            ).map(([skillName, score], index) => (
-                              <div
-                                key={skillName}
-                                className="flex justify-between hover:scale-105 transition-transform duration-300 group/item cursor-pointer p-1 rounded"
-                              >
-                                <span className="font-medium">{skillName}</span>
-                                <span
-                                  className="font-medium"
-                                  style={{ color: getScoreColor(score) }}
-                                >
-                                  {animateProgress ? score : 0}%
-                                </span>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400">
-                      <FileText className="w-12 h-12 mb-2 text-[#4A90A4]" />
-                      <div className="text-lg font-semibold mb-2">
-                        No analysis result yet
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Please analyze your CV to see detailed suggestions and
-                        explanations.
                       </div>
                     </div>
                   )}

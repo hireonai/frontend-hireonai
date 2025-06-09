@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, TrendingUp } from "lucide-react";
 import { CheckCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,33 +30,89 @@ import { useAuthStore } from "@/store/auth";
 import { useProfileStore } from "@/store/profile";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useCVAnalysisStore } from "@/store/cv-analysis";
 
 export default function CVAnalysisPage() {
   const [activeTab, setActiveTab] = useState("upload");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [animateProgress, setAnimateProgress] = useState(false);
 
-  const handleAnalyze = () => {
+  const {
+    analysisResult,
+    loading: cvLoading,
+    error: cvError,
+    analyzeCV,
+    clearResult,
+  } = useCVAnalysisStore();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    validateAndSetFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer.files?.[0];
+    validateAndSetFile(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const validateAndSetFile = (file?: File) => {
+    setFileError(null);
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      setFileError("Only PDF files are allowed.");
+      setSelectedFile(null);
+      clearResult();
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setFileError("File size must not exceed 5MB.");
+      setSelectedFile(null);
+      clearResult();
+      return;
+    }
+    setSelectedFile(file);
+    setFileError(null);
+    clearResult();
+  };
+
+  const handleAnalyze = async () => {
+    if (!selectedFile) return;
     setIsUploading(true);
     setUploadProgress(0);
 
-    const interval = setInterval(() => {
+    // Optional: fake progress bar (UX)
+    const progressInterval = setInterval(() => {
       setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsUploading(false);
-            setActiveTab("results");
-
-            setTimeout(() => setAnimateProgress(true), 500);
-          }, 500);
-          return 100;
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return prev;
         }
         return prev + 10;
       });
     }, 200);
+
+    await analyzeCV(selectedFile);
+
+    clearInterval(progressInterval);
+    setUploadProgress(100);
+    setTimeout(() => {
+      setIsUploading(false);
+      setActiveTab("results");
+      setTimeout(() => setAnimateProgress(true), 500);
+    }, 500);
   };
 
   const handleTabChange = (value: string) => {
@@ -260,19 +316,51 @@ export default function CVAnalysisPage() {
                       Upload your CV
                     </h2>
                     <p className="text-gray-600 mb-8 transition-colors duration-300 group-hover:text-gray-700">
-                      Drag and drop your CV file here or click to browse. We
-                      support PDF, DOC, and DOCX formats.
+                      Drag and drop your CV file here or click to browse, PDF
+                      only.
                     </p>
 
                     {/* Enhanced Drop Zone */}
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 mb-6 hover:border-[#4A90A4] transition-all duration-300 hover:bg-gray-50 hover:shadow-lg group-hover:scale-105 cursor-pointer">
+                    <div
+                      className={`border-2 border-dashed border-gray-300 rounded-lg p-12 mb-6 hover:border-[#4A90A4] transition-all duration-300 hover:bg-gray-50 hover:shadow-lg group-hover:scale-105 cursor-pointer 
+  ${fileError ? "border-red-500" : ""}`}
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
                       <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4 transition-all duration-300 hover:text-[#4A90A4] hover:scale-110" />
                       <p className="text-gray-600 mb-4 transition-colors duration-300">
-                        Drop your CV here or click to upload
+                        {selectedFile ? (
+                          <span>
+                            <span className="font-semibold text-[#4A90A4]">
+                              {selectedFile.name}
+                            </span>{" "}
+                            ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                          </span>
+                        ) : (
+                          "Drop your CV here or click to upload"
+                        )}
                       </p>
-                      <Button className="bg-[#4A90A4] hover:bg-[#4A90A4]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                      <Button
+                        className="bg-[#4A90A4] hover:bg-[#4A90A4]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
+                        }}
+                        type="button"
+                      >
                         Choose File
                       </Button>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      {fileError && (
+                        <p className="text-red-500 mt-2">{fileError}</p>
+                      )}
                     </div>
 
                     {/* Upload Progress */}
@@ -295,9 +383,9 @@ export default function CVAnalysisPage() {
                       size="lg"
                       className="bg-[#163756] hover:bg-[#D1E8EC] hover:text-[#4A90A4] px-12 transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
                       onClick={handleAnalyze}
-                      disabled={isUploading}
+                      disabled={isUploading || !selectedFile || cvLoading}
                     >
-                      {isUploading ? (
+                      {isUploading || cvLoading ? (
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                           <span>Analyzing...</span>

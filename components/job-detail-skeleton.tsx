@@ -84,6 +84,35 @@ export function JobDetailSkeleton() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Analysis Explanation Skeleton */}
+        <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+          <CardHeader>
+            <CardTitle>
+              <Skeleton className="h-6 w-40" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-5/6 mb-2" />
+            <Skeleton className="h-4 w-3/4 mb-4" />
+            <Skeleton className="h-5 w-28 mb-2" />
+            <ul className="space-y-1">
+              {[...Array(2)].map((_, i) => (
+                <li key={i}>
+                  <Skeleton className="h-4 w-3/4" />
+                </li>
+              ))}
+            </ul>
+            <Skeleton className="h-5 w-32 mt-2 mb-2" />
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex justify-between mb-1">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-4 w-10" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
 
       {/* Sidebar Section */}
@@ -137,35 +166,6 @@ export function JobDetailSkeleton() {
                 ))}
               </ul>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Analysis Explanation Skeleton */}
-        <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
-          <CardHeader>
-            <CardTitle>
-              <Skeleton className="h-6 w-40" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-5/6 mb-2" />
-            <Skeleton className="h-4 w-3/4 mb-4" />
-            <Skeleton className="h-5 w-28 mb-2" />
-            <ul className="space-y-1">
-              {[...Array(2)].map((_, i) => (
-                <li key={i}>
-                  <Skeleton className="h-4 w-3/4" />
-                </li>
-              ))}
-            </ul>
-            <Skeleton className="h-5 w-32 mt-2 mb-2" />
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex justify-between mb-1">
-                <Skeleton className="h-4 w-1/3" />
-                <Skeleton className="h-4 w-10" />
-              </div>
-            ))}
           </CardContent>
         </Card>
       </div>

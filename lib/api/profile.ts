@@ -96,10 +96,6 @@ export async function uploadCVApi(file: File): Promise<UploadCVResponse> {
   const formData = new FormData();
   formData.append("cv", file);
 
-  for (let [key, value] of formData.entries()) {
-    console.log(key, value);
-  }
-
   try {
     const res = await axiosInstance.patch("/profile/cv", formData, {
       headers: {
