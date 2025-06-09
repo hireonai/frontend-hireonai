@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/hireon-logo.png" sizes="any" />
+        <link rel="icon" href="/hireon-logo.ico" sizes="any" />
       </head>
       <body suppressHydrationWarning>
         {children}

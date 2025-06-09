@@ -9,6 +9,12 @@ import {
   unbookmarkJobApi,
   BookmarkJobResponse,
   UpdatedBookmarkJobs,
+  updateProfileApi,
+  UpdateProfilePayload,
+  uploadPhotoApi,
+  UploadPhotoResponse,
+  updateTagPreferencesApi,
+  UpdateTagPreferencesResponse,
 } from "../lib/api/profile";
 
 interface ProfileState {
@@ -28,6 +34,15 @@ interface ProfileState {
     message: string;
     updatedBookmarkJobs?: UpdatedBookmarkJobs[];
   }>;
+  updateProfile: (
+    payload: UpdateProfilePayload
+  ) => Promise<{ success: boolean; message: string }>;
+  uploadPhoto: (
+    file: File
+  ) => Promise<{ success: boolean; message: string; photoUrl?: string }>;
+  updateTagPreferences: (
+    tags: string[]
+  ) => Promise<{ success: boolean; message: string }>;
 }
 
 export const useProfileStore = create<ProfileState>((set, get) => ({
@@ -110,6 +125,64 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       return {
         success: false,
         message: res.message || "Failed to remove bookmark.",
+      };
+    }
+  },
+  updateProfile: async (payload) => {
+    const res: ProfileResponse = await updateProfileApi(payload);
+    if (res.success) {
+      set({ profile: res.data });
+      return { success: true, message: res.message };
+    } else {
+      return {
+        success: false,
+        message: res.message || "Failed to update profile.",
+      };
+    }
+  },
+  uploadPhoto: async (file) => {
+    const res: UploadPhotoResponse = await uploadPhotoApi(file);
+    if (res.success && res.data.photoUrl) {
+      const currentProfile = get().profile;
+      if (currentProfile) {
+        set({
+          profile: {
+            ...currentProfile,
+            photoUrl: res.data.photoUrl,
+          },
+        });
+      }
+      return {
+        success: true,
+        message: res.message,
+        photoUrl: res.data.photoUrl,
+      };
+    } else {
+      return {
+        success: false,
+        message: res.message || "Failed to upload photo.",
+      };
+    }
+  },
+  updateTagPreferences: async (tags) => {
+    const res: UpdateTagPreferencesResponse = await updateTagPreferencesApi({
+      tagPreferences: tags,
+    });
+    if (res.success) {
+      const currentProfile = get().profile;
+      if (currentProfile) {
+        set({
+          profile: {
+            ...currentProfile,
+            tagPreferences: res.data.updatedTagPreferences,
+          },
+        });
+      }
+      return { success: true, message: res.message };
+    } else {
+      return {
+        success: false,
+        message: res.message || "Failed to update tag preferences.",
       };
     }
   },

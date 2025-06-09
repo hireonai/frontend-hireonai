@@ -77,12 +77,13 @@ export default function JobDetailPage() {
   const handleAnalyzeCV = async () => {
     if (!jobId) return;
     const res = await analyzeCV(jobId);
-    toast({
-      title: "Success",
-      description: res.message,
-      variant: "success",
-    });
-    if (!res.success) {
+    if (res.success) {
+      toast({
+        title: "Success",
+        description: res.message,
+        variant: "success",
+      });
+    } else {
       toast({
         title: "Error",
         description: res.message,
