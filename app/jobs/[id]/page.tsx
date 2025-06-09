@@ -160,6 +160,60 @@ export default function JobDetailPage() {
     return "#FF6F6F";
   };
 
+  function contentAnalysisExplanation() {
+    return (
+      <>
+        {" "}
+        <CardHeader>
+          <CardTitle className="transition-colors duration-300 group-hover:text-[#4A90A4]">
+            Analysis Explanation
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {jobDetail?.analysisResult ? (
+            <>
+              <p className="text-sm text-gray-700 leading-relaxed transition-colors duration-300 group-hover:text-gray-800">
+                {jobDetail?.analysisResult?.explanation}
+              </p>
+
+              <div>
+                <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#FF8A50]">
+                  Suggestions:
+                </h4>
+                <ul className="space-y-1 text-sm text-gray-600">
+                  {jobDetail?.analysisResult?.suggestions.map(
+                    (suggestion, index) => (
+                      <li
+                        key={index}
+                        className={`animate-in fade-in slide-in-from-left-2 duration-300 delay-[800 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-orange-50 p-1 rounded`}
+                      >
+                        •{" "}
+                        <span className="transition-colors duration-300 group-hover/item:text-orange-700">
+                          {suggestion}
+                        </span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400">
+              <FileText className="w-12 h-12 mb-2 text-[#4A90A4]" />
+              <div className="text-lg font-semibold mb-2">
+                No analysis result yet
+              </div>
+              <div className="text-sm text-gray-500">
+                Please analyze your CV to see detailed suggestions and
+                explanations.
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Enhanced Header with animations */}
@@ -381,53 +435,8 @@ export default function JobDetailPage() {
               </Card>
 
               {/* Enhanced Analysis Explanation */}
-              <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
-                <CardHeader>
-                  <CardTitle className="transition-colors duration-300 group-hover:text-[#4A90A4]">
-                    Analysis Explanation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {jobDetail?.analysisResult ? (
-                    <>
-                      <p className="text-sm text-gray-700 leading-relaxed transition-colors duration-300 group-hover:text-gray-800">
-                        {jobDetail?.analysisResult?.explanation}
-                      </p>
-
-                      <div>
-                        <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-[#FF8A50]">
-                          Suggestions:
-                        </h4>
-                        <ul className="space-y-1 text-sm text-gray-600">
-                          {jobDetail?.analysisResult?.suggestions.map(
-                            (suggestion, index) => (
-                              <li
-                                key={index}
-                                className={`animate-in fade-in slide-in-from-left-2 duration-300 delay-[800 + index * 100}ms] hover:scale-105 transition-all duration-300 group/item cursor-pointer hover:bg-orange-50 p-1 rounded`}
-                              >
-                                •{" "}
-                                <span className="transition-colors duration-300 group-hover/item:text-orange-700">
-                                  {suggestion}
-                                </span>
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400">
-                      <FileText className="w-12 h-12 mb-2 text-[#4A90A4]" />
-                      <div className="text-lg font-semibold mb-2">
-                        No analysis result yet
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Please analyze your CV to see detailed suggestions and
-                        explanations.
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
+              <Card className="hidden md:block animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+                {contentAnalysisExplanation()}
               </Card>
             </div>
 
@@ -634,6 +643,10 @@ export default function JobDetailPage() {
                     </div>
                   )}
                 </CardContent>
+              </Card>
+
+              <Card className="block md:hidden animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+                {contentAnalysisExplanation()}
               </Card>
             </div>
           </div>
