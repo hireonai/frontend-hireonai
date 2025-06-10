@@ -60,6 +60,13 @@ export default function CVAnalysisPage() {
     return "#FF6F6F";
   };
 
+  const getCicleProgressDasharray = (score: number | undefined): string => {
+    if (score === undefined) return `${0} ${2 * Math.PI * 40}`;
+    const circumference = 2 * Math.PI * 40;
+    const dash = (score / 100) * circumference;
+    return `${dash} ${circumference}`;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     validateAndSetFile(file);
@@ -114,8 +121,6 @@ export default function CVAnalysisPage() {
     }, 200);
 
     await analyzeCV(selectedFile);
-
-    const analysis = await analyzeCV(selectedFile);
 
     clearInterval(progressInterval);
     setUploadProgress(100);
@@ -569,11 +574,18 @@ export default function CVAnalysisPage() {
                             )}
                             strokeWidth="8"
                             fill="none"
-                            strokeDasharray={`${78 * 2.51} 251.2`}
+                            strokeDasharray="0 251.2"
                             strokeLinecap="round"
-                            className="animate-in slide-in-from-bottom-4 duration-2000 delay-500"
                             style={{
-                              animation: "drawCircle 2s ease-out forwards",
+                              transition: "stroke-dasharray 2s ease-out",
+                              strokeDasharray: animateProgress
+                                ? `${
+                                    (typeof analysisResult?.overall_score ===
+                                    "number"
+                                      ? analysisResult.overall_score
+                                      : 0) * 2.51
+                                  } 251.2`
+                                : "0 251.2",
                             }}
                           />
                         </svg>
