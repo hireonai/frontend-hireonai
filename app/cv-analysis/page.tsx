@@ -440,12 +440,14 @@ export default function CVAnalysisPage() {
                         Generate your own cover letter for each job application
                         in seconds with AI-powered personalization.
                       </p>
-                      <Button
-                        variant="outline"
-                        className="w-full transition-all duration-300 hover:scale-105 group-hover:border-[#FF8A50] group-hover:text-[#FF8A50]"
-                      >
-                        Generate Cover Letter
-                      </Button>
+                      <Link href="/dashboard">
+                        <Button
+                          variant="outline"
+                          className="w-full transition-all duration-300 hover:scale-105 group-hover:border-[#FF8A50] group-hover:text-[#FF8A50]"
+                        >
+                          Generate Cover Letter
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
 
