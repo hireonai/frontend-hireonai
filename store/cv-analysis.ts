@@ -18,7 +18,6 @@ export const useCVAnalysisStore = create<CVAnalysisState>((set) => ({
     set({ loading: true, error: null, analysisResult: null });
     try {
       const result = await analyzeCVApi(file);
-      console.log(result);
       set({ analysisResult: result, loading: false });
     } catch (err: any) {
       set({

@@ -31,6 +31,7 @@ import { useProfileStore } from "@/store/profile";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useCVAnalysisStore } from "@/store/cv-analysis";
+import { CVAnalysisSkeleton } from "@/components/cv-analysis-skeleton";
 
 export default function CVAnalysisPage() {
   const [activeTab, setActiveTab] = useState("upload");
@@ -44,16 +45,25 @@ export default function CVAnalysisPage() {
   const [animateProgress, setAnimateProgress] = useState(false);
 
   const {
-    analysisResult,
     loading: cvLoading,
     error: cvError,
+    analysisResult,
     analyzeCV,
     clearResult,
   } = useCVAnalysisStore();
 
+  const getScoreColor = (score: number | null | undefined) => {
+    if (score === null || score === undefined) return "#9CA3AF";
+    if (score >= 85) return "#34C759";
+    if (score >= 60) return "#45B3FA";
+    if (score >= 45) return "#FFC107";
+    return "#FF6F6F";
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     validateAndSetFile(file);
+    clearResult();
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -93,7 +103,6 @@ export default function CVAnalysisPage() {
     setIsUploading(true);
     setUploadProgress(0);
 
-    // Optional: fake progress bar (UX)
     const progressInterval = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 90) {
@@ -105,6 +114,8 @@ export default function CVAnalysisPage() {
     }, 200);
 
     await analyzeCV(selectedFile);
+
+    const analysis = await analyzeCV(selectedFile);
 
     clearInterval(progressInterval);
     setUploadProgress(100);
@@ -323,7 +334,7 @@ export default function CVAnalysisPage() {
                     {/* Enhanced Drop Zone */}
                     <div
                       className={`border-2 border-dashed border-gray-300 rounded-lg p-12 mb-6 hover:border-[#4A90A4] transition-all duration-300 hover:bg-gray-50 hover:shadow-lg group-hover:scale-105 cursor-pointer 
-  ${fileError ? "border-red-500" : ""}`}
+                      ${fileError ? "border-red-500" : ""}`}
                       onDrop={handleDrop}
                       onDragOver={handleDragOver}
                       onClick={() => fileInputRef.current?.click()}
@@ -359,7 +370,7 @@ export default function CVAnalysisPage() {
                         onChange={handleFileChange}
                       />
                       {fileError && (
-                        <p className="text-red-500 mt-2">{fileError}</p>
+                        <p className="text-red-500 mt-5">{fileError}</p>
                       )}
                     </div>
 
@@ -423,7 +434,7 @@ export default function CVAnalysisPage() {
                         <FileText className="w-8 h-8 text-white transition-transform duration-300 group-hover:rotate-12" />
                       </div>
                       <h3 className="text-xl font-semibold mb-4 transition-colors duration-300 group-hover:text-[#FF8A50]">
-                        Cover Letter Generator
+                        Cover Letter
                       </h3>
                       <p className="text-gray-600 mb-6 transition-colors duration-300 group-hover:text-gray-700">
                         Generate your own cover letter for each job application
@@ -495,264 +506,262 @@ export default function CVAnalysisPage() {
             value="results"
             className="data-[state=active]:animate-in data-[state=inactive]:animate-out data-[state=inactive]:fade-out data-[state=active]:fade-in data-[state=active]:slide-in-from-bottom-4 duration-500"
           >
-            <div className="space-y-8">
-              {/* Enhanced Overall Score with Animated Circle */}
-              <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 transition-all duration-500 hover:shadow-2xl group">
-                <CardHeader>
-                  <CardTitle className="text-2xl transition-colors duration-300 group-hover:text-[#4A90A4]">
-                    CV Analysis Results
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-center mb-8">
-                    <div className="relative w-48 h-48 group-hover:scale-105 transition-transform duration-500">
-                      <svg
-                        className="w-full h-full transform -rotate-90"
-                        viewBox="0 0 100 100"
-                      >
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="40"
-                          stroke="#e5e7eb"
-                          strokeWidth="8"
-                          fill="none"
-                        />
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="40"
-                          stroke="#4A90A4"
-                          strokeWidth="8"
-                          fill="none"
-                          strokeDasharray={`${78 * 2.51} 251.2`}
-                          strokeLinecap="round"
-                          className="animate-in slide-in-from-bottom-4 duration-2000 delay-500"
-                          style={{
-                            animation: "drawCircle 2s ease-out forwards",
-                          }}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center animate-in fade-in duration-1000 delay-1000">
-                        <span className="text-4xl font-bold text-[#4A90A4] transition-all duration-300 group-hover:scale-110">
-                          78%
-                        </span>
-                        <span className="text-sm text-gray-600">
-                          Overall Score
-                        </span>
-                        <Badge
-                          variant="secondary"
-                          className="mt-2 transition-all duration-300 group-hover:scale-105"
-                        >
-                          Match
-                        </Badge>
-                      </div>
+            {!analysisResult && !isUploading && !cvLoading ? (
+              <Card className="w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 transition-all group hover:shadow-2xl hover:scale-[1.015]">
+                <CardContent className="space-y-4">
+                  <div className="flex flex-col items-center justify-center py-24 space-y-6">
+                    <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+                      <FileText className="w-20 h-20 text-gray-300 mb-4 group-hover:text-[#4A90A4] group-hover:scale-110 transition-all duration-500" />
                     </div>
+                    <h2 className="text-2xl font-semibold text-gray-700 mb-2 text-center group-hover:text-[#4A90A4] transition-colors duration-300">
+                      No analysis yet
+                    </h2>
+                    <p className="text-gray-500 text-center max-w-md animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700 group-hover:text-gray-700 transition-colors duration-300">
+                      Upload your CV and click{" "}
+                      <span className="font-semibold text-[#4A90A4] transition-all duration-300">
+                        CV Analysis
+                      </span>{" "}
+                      to get detailed AI-powered feedback and recommendations.
+                    </p>
+                    <Button
+                      className="mt-6 bg-[#4A90A4]  hover:bg-[#4A90A4]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                      onClick={() => setActiveTab("upload")}
+                      size="lg"
+                    >
+                      Upload CV
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Enhanced Score Breakdown */}
-              <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 transition-all duration-500 hover:shadow-xl">
-                <CardHeader>
-                  <CardTitle>Score Breakdown</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {[
-                    {
-                      name: "Technical Skills",
-                      score: 85,
-                      color: "#4A90A4",
-                      delay: 600,
-                    },
-                    {
-                      name: "Experience Relevance",
-                      score: 90,
-                      color: "#FF8A50",
-                      delay: 700,
-                    },
-                    {
-                      name: "Education",
-                      score: 85,
-                      color: "#FF8A50",
-                      delay: 800,
-                    },
-                    {
-                      name: "Achievement",
-                      score: 60,
-                      color: "#FF8A50",
-                      delay: 900,
-                    },
-                  ].map((item, index) => (
-                    <div
-                      key={item.name}
-                      className={`animate-in fade-in slide-in-from-left-4 duration-500 delay-[${item.delay}ms] group hover:scale-[1.02] transition-transform duration-300`}
-                    >
-                      <div className="flex justify-between mb-2">
-                        <span className="font-medium transition-colors duration-300 group-hover:text-gray-900">
-                          {item.name}
-                        </span>
-                        <span
-                          className={`font-semibold transition-all duration-300 group-hover:scale-110 ${
-                            animateProgress ? "animate-count-up" : ""
-                          }`}
-                          style={{ color: item.color }}
-                          data-value={item.score}
-                        >
-                          {animateProgress ? item.score : 0}%
-                        </span>
-                      </div>
-                      <div className="relative h-3 w-full bg-gray-200 rounded-full overflow-hidden transition-all duration-300 group-hover:h-4">
-                        <div
-                          className="h-full rounded-full transition-all duration-300"
-                          style={{
-                            backgroundColor: item.color,
-                            width: animateProgress ? `${item.score}%` : "0%",
-                            transition: `width 1.5s ease-out ${index * 0.2}s`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-
-              <div className="grid md:grid-cols-2 gap-8">
-                {/* Enhanced CV Strengths */}
-                <Card className="animate-in fade-in slide-in-from-left-4 duration-1000 delay-600 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+            ) : isUploading || cvLoading ? (
+              <CVAnalysisSkeleton />
+            ) : (
+              <div className="space-y-8">
+                <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 transition-all duration-500 hover:shadow-2xl group">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 transition-transform duration-300 group-hover:scale-125" />
-                      <span className="transition-colors duration-300 group-hover:text-green-600">
-                        CV Strengths
-                      </span>
+                    <CardTitle className="text-2xl transition-colors duration-300 group-hover:text-[#4A90A4]">
+                      CV Analysis Results
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ul className="space-y-3">
-                      {[
-                        "Strong technical skills section with relevant technologies",
-                        "Clear work experience progression",
-                        "Good educational background",
-                        "Professional formatting and layout",
-                      ].map((strength, index) => (
-                        <li
-                          key={index}
-                          className={`flex items-start space-x-2 animate-in fade-in slide-in-from-left-2 duration-500 delay-[${
-                            800 + index * 100
-                          }ms] hover:scale-105 transition-transform duration-300 group/item`}
+                    <div className="flex items-center justify-center mb-8">
+                      <div className="relative w-48 h-48 group-hover:scale-105 transition-transform duration-500">
+                        <svg
+                          className="w-full h-full transform -rotate-90"
+                          viewBox="0 0 100 100"
                         >
-                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0 transition-transform duration-300 group-hover/item:scale-125" />
-                          <span className="text-sm transition-colors duration-300 group-hover/item:text-green-700">
-                            {strength}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="#e5e7eb"
+                            strokeWidth="8"
+                            fill="none"
+                          />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke={getScoreColor(
+                              analysisResult?.overall_score
+                            )}
+                            strokeWidth="8"
+                            fill="none"
+                            strokeDasharray={`${78 * 2.51} 251.2`}
+                            strokeLinecap="round"
+                            className="animate-in slide-in-from-bottom-4 duration-2000 delay-500"
+                            style={{
+                              animation: "drawCircle 2s ease-out forwards",
+                            }}
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center animate-in fade-in duration-1000 delay-1000">
+                          <span
+                            className={`text-4xl font-bold text-[${getScoreColor(
+                              analysisResult?.overall_score
+                            )}] transition-all duration-300 group-hover:scale-110`}
+                          >
+                            {analysisResult?.overall_score}%
                           </span>
-                        </li>
-                      ))}
-                    </ul>
+                          <span className="text-sm text-gray-600">
+                            Overall Score
+                          </span>
+                          <Badge
+                            style={{
+                              backgroundColor: getScoreColor(
+                                analysisResult?.overall_score
+                              ),
+                            }}
+                            className="mt-2 transition-all duration-300 group-hover:scale-105"
+                          >
+                            Match
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
 
-                {/* Enhanced Areas for Improvement */}
-                <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-800 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+                {/* Enhanced Score Breakdown */}
+                <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 transition-all duration-500 hover:shadow-xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <AlertTriangle className="w-5 h-5 text-orange-600 transition-transform duration-300 group-hover:scale-125" />
-                      <span className="transition-colors duration-300 group-hover:text-orange-600">
-                        Areas for Improvement
-                      </span>
-                    </CardTitle>
+                    <CardTitle>Score Breakdown</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
-                      {[
-                        "Add more quantifiable achievements and metrics",
-                        "Include relevant certifications or courses",
-                        "Expand on project descriptions and impact",
-                        "Add keywords relevant to target positions",
-                      ].map((improvement, index) => (
-                        <li
-                          key={index}
-                          className={`flex items-start space-x-2 animate-in fade-in slide-in-from-right-2 duration-500 delay-[1000 + index * 100}ms] hover:scale-105 transition-transform duration-300 group/item`}
+                  <CardContent className="space-y-6">
+                    {Object.entries(analysisResult?.score_breakdown || {}).map(
+                      ([skill, score], index) => (
+                        <div
+                          key={skill}
+                          className={`animate-in fade-in slide-in-from-left-4 duration-500 delay-[${
+                            index * 100
+                          }ms] group hover:scale-[1.02] transition-transform duration-300`}
                         >
-                          <AlertTriangle className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0 transition-transform duration-300 group-hover/item:scale-125" />
-                          <span className="text-sm transition-colors duration-300 group-hover/item:text-orange-700">
-                            {improvement}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                          <div className="flex justify-between mb-2">
+                            <span className="font-medium transition-colors duration-300 group-hover:text-gray-900">
+                              {skill
+                                .replace(/_/g, " ")
+                                .replace(/\b\w/g, (char) => char.toUpperCase())}
+                            </span>
+                            <span
+                              className={`font-semibold transition-all duration-300 group-hover:scale-110 ${
+                                animateProgress ? "animate-count-up" : ""
+                              }`}
+                              style={{ color: getScoreColor(score) }}
+                              data-value={score}
+                            >
+                              {animateProgress ? score : 0}%
+                            </span>
+                          </div>
+                          <div className="relative h-3 w-full bg-gray-200 rounded-full overflow-hidden transition-all duration-300 group-hover:h-4">
+                            <div
+                              className="h-full rounded-full transition-all duration-300"
+                              style={{
+                                backgroundColor: getScoreColor(score),
+                                width: animateProgress ? `${score}%` : "0%",
+                                transition: `width 1.5s ease-out ${
+                                  index * 0.2
+                                }s`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </CardContent>
+                </Card>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Enhanced CV Strengths */}
+                  <Card className="animate-in fade-in slide-in-from-left-4 duration-1000 delay-600 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <CheckCircle className="w-5 h-5 text-green-600 transition-transform duration-300 group-hover:scale-125" />
+                        <span className="transition-colors duration-300 group-hover:text-green-600">
+                          CV Strengths
+                        </span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {analysisResult?.cv_strengths?.map(
+                          (strength, index) => (
+                            <li
+                              key={index}
+                              className={`flex items-start space-x-2 animate-in fade-in slide-in-from-left-2 duration-500 delay-[${
+                                800 + index * 100
+                              }ms] hover:scale-105 transition-transform duration-300 group/item`}
+                            >
+                              <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0 transition-transform duration-300 group-hover/item:scale-125" />
+                              <span className="text-sm transition-colors duration-300 group-hover/item:text-green-700">
+                                {strength}
+                              </span>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </CardContent>
+                  </Card>
+
+                  {/* Enhanced Areas for Improvement */}
+                  <Card className="animate-in fade-in slide-in-from-right-4 duration-1000 delay-800 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <AlertTriangle className="w-5 h-5 text-orange-600 transition-transform duration-300 group-hover:scale-125" />
+                        <span className="transition-colors duration-300 group-hover:text-orange-600">
+                          Areas for Improvement
+                        </span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {analysisResult?.areas_for_improvement?.map(
+                          (improvement, index) => (
+                            <li
+                              key={index}
+                              className={`flex items-start space-x-2 animate-in fade-in slide-in-from-right-2 duration-500 delay-[1000 + index * 100}ms] hover:scale-105 transition-transform duration-300 group/item`}
+                            >
+                              <AlertTriangle className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0 transition-transform duration-300 group-hover/item:scale-125" />
+                              <span className="text-sm transition-colors duration-300 group-hover/item:text-orange-700">
+                                {improvement}
+                              </span>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Enhanced Section Analysis */}
+                <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-[1000ms] transition-all duration-500 hover:shadow-xl">
+                  <CardHeader>
+                    <CardTitle>Section by Section Analysis</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {analysisResult?.section_analysis
+                      ? Object.entries(analysisResult.section_analysis).map(
+                          ([sectionKey, section], index) => (
+                            <div
+                              key={sectionKey}
+                              className={`border-l-4 pl-4 animate-in fade-in slide-in-from-left-4 duration-500 delay-[${
+                                index * 100
+                              }ms] hover:scale-[1.02] transition-all duration-300 group cursor-pointer hover:shadow-lg hover:bg-gray-50 p-4 rounded-r-lg`}
+                              style={{
+                                borderLeftColor: getScoreColor(section.score),
+                              }}
+                            >
+                              <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-gray-900">
+                                {sectionKey
+                                  .replace("_", " ")
+                                  .replace(/\b\w/g, (l) => l.toUpperCase())}
+                              </h4>
+                              <p className="text-gray-600 text-sm mb-2 transition-colors duration-300 group-hover:text-gray-700">
+                                {section.comment}
+                              </p>
+                              <div className="flex items-center space-x-2">
+                                <TrendingUp
+                                  className="w-4 h-4 transition-all duration-300 group-hover:scale-125"
+                                  style={{
+                                    color: getScoreColor(section.score),
+                                  }}
+                                />
+                                <span
+                                  className="text-sm font-medium transition-all duration-300 group-hover:scale-105"
+                                  style={{
+                                    color: getScoreColor(section.score),
+                                  }}
+                                >
+                                  Score: {section.score}%
+                                </span>
+                              </div>
+                            </div>
+                          )
+                        )
+                      : []}
                   </CardContent>
                 </Card>
               </div>
-
-              {/* Enhanced Section Analysis */}
-              <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-[1000ms] transition-all duration-500 hover:shadow-xl">
-                <CardHeader>
-                  <CardTitle>Section-by-Section Analysis</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {[
-                    {
-                      title: "Work Experience",
-                      description:
-                        "Your work experience section shows good progression and relevant roles. Consider adding more specific achievements and quantifiable results to strengthen this section.",
-                      score: 85,
-                      color: "#4A90A4",
-                      delay: 1200,
-                    },
-                    {
-                      title: "Education",
-                      description:
-                        "Strong educational background with relevant degree. Consider adding any relevant coursework, projects, or academic achievements.",
-                      score: 85,
-                      color: "#FF8A50",
-                      delay: 1300,
-                    },
-                    {
-                      title: "Skills",
-                      description:
-                        "Excellent technical skills coverage with modern technologies. Consider organizing skills by category and adding proficiency levels.",
-                      score: 90,
-                      color: "#4A90A4",
-                      delay: 1400,
-                    },
-                    {
-                      title: "Achievements",
-                      description:
-                        "This section needs improvement. Add specific accomplishments, awards, or notable projects with measurable impact and results.",
-                      score: 60,
-                      color: "#f59e0b",
-                      delay: 1500,
-                    },
-                  ].map((section, index) => (
-                    <div
-                      key={section.title}
-                      className={`border-l-4 pl-4 animate-in fade-in slide-in-from-left-4 duration-500 delay-[${section.delay}ms] hover:scale-[1.02] transition-all duration-300 group cursor-pointer hover:shadow-lg hover:bg-gray-50 p-4 rounded-r-lg`}
-                      style={{ borderLeftColor: section.color }}
-                    >
-                      <h4 className="font-semibold mb-2 transition-colors duration-300 group-hover:text-gray-900">
-                        {section.title}
-                      </h4>
-                      <p className="text-gray-600 text-sm mb-2 transition-colors duration-300 group-hover:text-gray-700">
-                        {section.description}
-                      </p>
-                      <div className="flex items-center space-x-2">
-                        <TrendingUp
-                          className="w-4 h-4 transition-all duration-300 group-hover:scale-125"
-                          style={{ color: section.color }}
-                        />
-                        <span
-                          className="text-sm font-medium transition-all duration-300 group-hover:scale-105"
-                          style={{ color: section.color }}
-                        >
-                          Score: {section.score}%
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
