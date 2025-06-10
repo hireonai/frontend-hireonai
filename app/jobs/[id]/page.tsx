@@ -306,7 +306,7 @@ export default function JobDetailPage() {
                     <Button
                       className="bg-[#4A90A4] hover:bg-[#D1E8EC] hover:text-[#4A90A4] px-8 transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 flex-1 sm:flex-none"
                       onClick={handleAnalyzeCV}
-                      disabled={analyzingCV}
+                      disabled={analyzingCV || profile?.cvUrl === null}
                     >
                       {analyzingCV ? (
                         <span className="flex items-center gap-2">
@@ -464,12 +464,12 @@ export default function JobDetailPage() {
                     placeholder="Enter your suggestions for the cover letter"
                     value={coverLetterText}
                     onChange={(e) => setCoverLetterText(e.target.value)}
-                    disabled={coverLetterLoading}
+                    disabled={coverLetterLoading || profile?.cvUrl === null}
                   />
                   <Button
                     className="mt-4 w-full bg-[#B01FCE] hover:bg-white hover:text-[#B01FCE] transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50"
                     onClick={handleGenerateCoverLetter}
-                    disabled={coverLetterLoading}
+                    disabled={coverLetterLoading || profile?.cvUrl === null}
                   >
                     {coverLetterLoading ? (
                       <span className="flex items-center gap-2">

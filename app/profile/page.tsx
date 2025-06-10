@@ -418,7 +418,7 @@ export default function ProfilePage() {
                   <div className="flex items-center justify-center sm:justify-start space-x-2 text-gray-500 mb-4">
                     <MapPin className="w-4 h-4 flex-shrink-0" />
                     <span className="text-sm sm:text-base">
-                      {profile?.domicile}
+                      {!profile?.domicile ? "-" : profile?.domicile}
                     </span>
                   </div>
                   {error && (
@@ -682,7 +682,9 @@ export default function ProfilePage() {
                                 )} flex-shrink-0 group-hover:animate-pulse relative z-10`}
                               >
                                 <span className="text-white font-bold text-xs sm:text-sm">
-                                  {job.scoreMatch}
+                                  {job.scoreMatch == null
+                                    ? "-"
+                                    : job.scoreMatch}
                                 </span>
                               </div>
                               <div className="flex-1 min-w-0">
@@ -722,6 +724,7 @@ export default function ProfilePage() {
                       className="w-full transition-all duration-300 hover:scale-105 text-sm sm:text-base group relative overflow-hidden top-3"
                     >
                       <span className="relative z-10 flex items-center justify-center">
+                        {!profile?.bookmarkJobs.length && "No Saved Jobs Yet, "}
                         View All Jobs
                         <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
                       </span>
