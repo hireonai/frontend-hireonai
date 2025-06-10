@@ -361,10 +361,11 @@ export default function JobDetailPage() {
               <Card className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 transition-all  hover:shadow-xl hover:scale-[1.02] group">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2 transition-colors duration-300 group-hover:text-[#4A90A4]">
-                    <div className="overflow-hidden rounded-full w-10 h-10">
+                    <div className="w-12 aspect-square rounded-full overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 hover:scale-105">
                       <img
                         src={jobDetail?.company?.profileSrc}
                         className="w-full h-full object-cover"
+                        alt="Company Profile"
                       />
                     </div>
                     <span>{jobDetail?.company?.name}</span>

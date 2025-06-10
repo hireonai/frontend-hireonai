@@ -578,13 +578,13 @@ export default function ProfilePage() {
                   <div className="border rounded-lg p-4 mb-4 transition-all duration-300 hover:bg-gray-50 hover:border-[#4A90A4]/30">
                     <div className="flex items-center space-x-3">
                       <FileText className="w-8 h-8 text-[#4A90A4] transition-transform duration-300 hover:scale-110 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 overflow-hidden">
                         {cvUrl ? (
                           <a
                             href={cvUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium text-sm sm:text-base truncate underline decoration-dotted hover:text-[#4A90A4]"
+                            className="block font-medium text-sm sm:text-base truncate underline decoration-dotted hover:text-[#4A90A4]"
                             title={cvFileName}
                           >
                             {cvFileName}
