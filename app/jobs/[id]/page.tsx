@@ -435,7 +435,7 @@ export default function JobDetailPage() {
               </Card>
 
               {/* Enhanced Analysis Explanation */}
-              <Card className="hidden md:block animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+              <Card className="hidden lg:block animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
                 {contentAnalysisExplanation()}
               </Card>
             </div>
@@ -645,7 +645,7 @@ export default function JobDetailPage() {
                 </CardContent>
               </Card>
 
-              <Card className="block md:hidden animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
+              <Card className="block lg:hidden animate-in fade-in slide-in-from-right-4 duration-1000 delay-700 transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group">
                 {contentAnalysisExplanation()}
               </Card>
             </div>
