@@ -60,13 +60,6 @@ export default function CVAnalysisPage() {
     return "#FF6F6F";
   };
 
-  const getCicleProgressDasharray = (score: number | undefined): string => {
-    if (score === undefined) return `${0} ${2 * Math.PI * 40}`;
-    const circumference = 2 * Math.PI * 40;
-    const dash = (score / 100) * circumference;
-    return `${dash} ${circumference}`;
-  };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     validateAndSetFile(file);
