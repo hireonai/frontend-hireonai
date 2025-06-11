@@ -267,7 +267,13 @@ export default function RegisterPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-3">
-              <Button variant="outline" className="h-12">
+              <Button
+                variant="outline"
+                className="h-12"
+                onClick={() => {
+                  window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/linkedin`;
+                }}
+              >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
                     fill="#0077B5"
@@ -275,7 +281,13 @@ export default function RegisterPage() {
                   />
                 </svg>
               </Button>
-              <Button variant="outline" className="h-12">
+              <Button
+                variant="outline"
+                className="h-12"
+                onClick={() => {
+                  window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/facebook`;
+                }}
+              >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
                     fill="#1877F2"
@@ -283,7 +295,13 @@ export default function RegisterPage() {
                   />
                 </svg>
               </Button>
-              <Button variant="outline" className="h-12">
+              <Button
+                variant="outline"
+                className="h-12"
+                onClick={() => {
+                  window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+                }}
+              >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"

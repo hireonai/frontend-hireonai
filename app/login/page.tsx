@@ -53,6 +53,7 @@ function LoginForm() {
         variant: "success",
       });
       router.replace("/dashboard");
+      return;
     } else if (success) {
       setAlert({
         type: "success",
