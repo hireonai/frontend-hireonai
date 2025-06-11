@@ -104,31 +104,33 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
-              className="text-[#4A90A4] transition-colors duration-300 relative group"
-            >
-              Home
-              <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
-              <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
-            </Link>
-            <Link
-              href="/dashboard"
-              className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
-            >
-              Job list
-              <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
-              <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
-            </Link>
-            <Link
-              href="/cv-analysis"
-              className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
-            >
-              CV Analysis
-              <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
-              <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
-            </Link>
+          <div className="flex-grow flex justify-center">
+            <nav className="hidden md:flex items-center space-x-6">
+              <Link
+                href="/"
+                className="text-[#4A90A4] transition-colors duration-300 relative group"
+              >
+                Home
+                <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
+                <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
+              </Link>
+              <Link
+                href="/dashboard"
+                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
+              >
+                Job list
+                <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
+                <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
+              </Link>
+              <Link
+                href="/cv-analysis"
+                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
+              >
+                CV Analysis
+                <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
+                <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
+              </Link>
+            </nav>
           </div>
 
           <div className="flex items-center space-x-4">
