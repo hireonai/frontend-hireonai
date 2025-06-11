@@ -25,6 +25,8 @@ import {
   Twitter,
   User,
   ChevronDown,
+  LogIn,
+  Menu,
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { useProfileStore } from "@/store/profile";
@@ -104,26 +106,26 @@ export default function LandingPage() {
 
           <div className="hidden md:flex items-center space-x-8">
             <Link
-              href="#home"
-              className="text-gray-700 hover:text-[#4A90A4] transition-all duration-300 relative group font-medium"
+              href="/"
+              className="text-[#4A90A4] transition-colors duration-300 relative group"
             >
               Home
               <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
               <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
             </Link>
             <Link
-              href="#features"
-              className="text-gray-700 hover:text-[#4A90A4] transition-all duration-300 relative group font-medium"
+              href="/dashboard"
+              className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
             >
-              Features
+              Job list
               <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
               <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
             </Link>
             <Link
-              href="#how-it-works"
-              className="text-gray-700 hover:text-[#4A90A4] transition-all duration-300 relative group font-medium"
+              href="/cv-analysis"
+              className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
             >
-              How it Works
+              CV Analysis
               <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] transition-all duration-500 group-hover:w-full rounded-full"></span>
               <span className="absolute -inset-2 bg-[#4A90A4]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></span>
             </Link>
@@ -181,22 +183,64 @@ export default function LandingPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center space-x-4">
-                <Link href="/login">
-                  <Button
-                    variant="outline"
-                    className="border-2 border-[#4A90A4] text-[#4A90A4] hover:bg-[#4A90A4] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-[#4A90A4]/25 backdrop-blur-sm font-semibold"
-                  >
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button className="bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] text-white hover:from-[#FF8A50] hover:to-[#4A90A4] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-[#4A90A4]/30 font-semibold relative overflow-hidden group">
-                    <span className="relative z-10">Register</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                  </Button>
-                </Link>
-              </div>
+              <>
+                <div className="hidden md:flex items-center space-x-4">
+                  <Link href="/login">
+                    <Button
+                      variant="outline"
+                      className="border-2 border-[#4A90A4] text-[#4A90A4] hover:bg-[#4A90A4] hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-[#4A90A4]/25 backdrop-blur-sm font-semibold"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                  <Link href="/register">
+                    <Button className="bg-gradient-to-r from-[#4A90A4] to-[#FF8A50] text-white hover:from-[#FF8A50] hover:to-[#4A90A4] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-[#4A90A4]/30 font-semibold relative overflow-hidden group">
+                      <span className="relative z-10">Register</span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    </Button>
+                  </Link>
+                </div>
+                <div className="md:hidden">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="flex items-center space-x-2 hover:bg-gray-100 transition-colors duration-300"
+                        aria-label="Open login/register menu"
+                      >
+                        <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                          <Menu className="w-4 h-4" />
+                        </div>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="animate-in slide-in-from-top-2 duration-300"
+                    >
+                      <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
+                        <Link href="/login" className="w-full">
+                          Login
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100">
+                        <Link href="/register" className="w-full">
+                          Register
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                        <Link href="/dashboard" className="w-full">
+                          Job List
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="transition-colors duration-200 hover:bg-gray-100 md:hidden">
+                        <Link href="/cv-analysis" className="w-full">
+                          CV Analysis
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </>
             )}
           </div>
         </div>

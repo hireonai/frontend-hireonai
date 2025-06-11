@@ -274,7 +274,7 @@ export default function ProfilePage() {
               </Link>
               <Link
                 href="/dashboard"
-                className="text-gray-900 hover:text-[#4A90A4] font-medium relative group"
+                className="text-gray-700 hover:text-[#4A90A4] transition-colors duration-300 relative group"
               >
                 Job list
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#4A90A4] transition-all duration-300 group-hover:w-full"></span>
