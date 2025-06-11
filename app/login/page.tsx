@@ -13,10 +13,13 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
-  username: z.string().min(1, { message: "Username or email is required." }),
+  username: z
+    .string()
+    .min(3, { message: "Username or Email must be at least 3 characters." })
+    .max(30, { message: "Username or Email must be at most 30 characters." }),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters." }),
+    .min(8, { message: "Password must be at least 8 characters." }),
 });
 
 function LoginForm() {
@@ -130,7 +133,7 @@ function LoginForm() {
         )}
         <form className="space-y-4" onSubmit={handleSubmit} autoComplete="off">
           <div className="space-y-2">
-            <Label htmlFor="username">Email</Label>
+            <Label htmlFor="username">Username or Email</Label>
             <Input
               id="username"
               name="username"

@@ -15,17 +15,29 @@ import { useProfileStore } from "@/store/profile";
 const registerSchema = z
   .object({
     email: z.string().email({ message: "Email is not valid" }),
+
     username: z
       .string()
-      .min(3, { message: "Username must be at least 3 characters" }),
-    fullname: z.string().min(3, { message: "Full name is required" }),
-    phone: z.string().min(8, { message: "Phone number is required" }),
+      .min(3, { message: "Username must be at least 3 characters" })
+      .max(30, { message: "Username must be at most 30 characters" }),
+
+    fullname: z
+      .string()
+      .min(1, { message: "Full name is required" })
+      .max(100, { message: "Full name must be at most 100 characters" }),
+
+    phone: z
+      .string()
+      .min(10, { message: "Phone number must be at least 10 digits" })
+      .max(15, { message: "Phone number must be at most 15 digits" }),
+
     password: z
       .string()
-      .min(6, { message: "Password must be at least 6 characters" }),
+      .min(8, { message: "Password must be at least 8 characters" }),
+
     confirmPassword: z
       .string()
-      .min(6, { message: "Confirmation password is required" }),
+      .min(8, { message: "Confirmation password is required" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password and confirmation password do not match",
