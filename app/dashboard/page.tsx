@@ -23,6 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ComboBox } from "@/components/ui/combobox";
 import {
   Search,
   MapPin,
@@ -370,21 +371,17 @@ export default function DashboardPage() {
           <h3 className="font-semibold mb-4 text-sm lg:text-base">
             Experience Level
           </h3>
-          <Select
+          <ComboBox
+            options={
+              jobMinExperiences?.map((e) => ({
+                value: e._id,
+                label: e.name,
+              })) ?? []
+            }
             value={selectedExperience}
-            onValueChange={handleExperienceChange}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select experience" />
-            </SelectTrigger>
-            <SelectContent>
-              {jobMinExperiences?.map((exp) => (
-                <SelectItem key={exp._id} value={exp._id}>
-                  {exp.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={handleExperienceChange}
+            placeholder="Select Experience"
+          />
         </div>
 
         {/* Job Categories */}
@@ -421,18 +418,17 @@ export default function DashboardPage() {
           <h3 className="font-semibold mb-4 text-sm lg:text-base">
             Company Industry
           </h3>
-          <Select value={selectedIndustry} onValueChange={handleIndustryChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select industry" />
-            </SelectTrigger>
-            <SelectContent>
-              {companyIndustries?.map((industry) => (
-                <SelectItem key={industry._id} value={industry._id}>
-                  {industry.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <ComboBox
+            options={
+              companyIndustries?.map((i) => ({
+                value: i._id,
+                label: i.name,
+              })) ?? []
+            }
+            value={selectedIndustry}
+            onChange={handleIndustryChange}
+            placeholder="Select Industry"
+          />
         </div>
       </CardContent>
     </Card>
