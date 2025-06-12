@@ -187,7 +187,9 @@ export function UploadCV({
           )}
           {cvUrl && (
             <div className="mt-4 text-xs text-gray-700">
-              <div className="font-semibold mb-1">Your current CV:</div>
+              <div className="font-semibold mb-1">
+                Your current CV listed on your profile:
+              </div>
               <p className="text-[#4A90A4]">{cvUrl.split("/").slice(-1)[0]}</p>
             </div>
           )}
