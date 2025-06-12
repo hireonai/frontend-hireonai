@@ -21,7 +21,7 @@ type ComboBoxOption = { value: string; label: string };
 
 interface ComboBoxProps {
   options: ComboBoxOption[];
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
   placeholder?: string;
   searchPlaceholder?: string;
@@ -66,8 +66,7 @@ export const ComboBox: React.FC<ComboBoxProps> = ({
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.label.toLowerCase()} // <--- ini yang penting!
-                  // value harus label supaya searchable
+                  value={option.label.toLowerCase()}
                   onSelect={() => {
                     onChange(option.value);
                     setOpen(false);
