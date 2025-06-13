@@ -15,6 +15,8 @@ import {
   UploadPhotoResponse,
   updateTagPreferencesApi,
   UpdateTagPreferencesResponse,
+  deleteCVApi,
+  DeleteCVResponse,
 } from "../lib/api/profile";
 
 interface ProfileState {
@@ -24,6 +26,7 @@ interface ProfileState {
   uploadCV: (
     file: File
   ) => Promise<{ success: boolean; message: string; cvUrl?: string }>;
+  deleteCV: () => Promise<{ success: boolean; message: string }>;
   bookmarkJob: (jobId: string) => Promise<{
     success: boolean;
     message: string;
@@ -77,6 +80,26 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       return {
         success: false,
         message: res.message || "Failed to upload CV.",
+      };
+    }
+  },
+  deleteCV: async () => {
+    const res: DeleteCVResponse = await deleteCVApi();
+    if (res.success) {
+      const currentProfile = get().profile;
+      if (currentProfile) {
+        set({
+          profile: {
+            ...currentProfile,
+            cvUrl: "",
+          },
+        });
+      }
+      return { success: true, message: res.message };
+    } else {
+      return {
+        success: false,
+        message: res.message || "Failed to delete CV.",
       };
     }
   },

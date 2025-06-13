@@ -94,6 +94,30 @@ export default function ProfilePage() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [isUploadingCV, setIsUploadingCV] = useState(false);
 
+  const deleteCV = useProfileStore((state) => (state as any).deleteCV); // Pastikan sudah update store
+  const [isDeletingCV, setIsDeletingCV] = useState(false);
+
+  const handleDeleteCV = async () => {
+    setCvError(null);
+    setIsDeletingCV(true);
+    const res = await deleteCV();
+    setIsDeletingCV(false);
+    if (res.success) {
+      toast({
+        title: "Success",
+        description: res.message,
+        variant: "success",
+      });
+    } else {
+      setCvError(res.message);
+      toast({
+        title: "Error",
+        description: res.message,
+        variant: "error",
+      });
+    }
+  };
+
   useEffect(() => {
     if (profile === null) {
       fetchProfile().then((res) => {
@@ -628,6 +652,23 @@ export default function ProfilePage() {
                       ref={cvInputRef}
                       onChange={handleCvChange}
                     />
+                    {cvUrl && (
+                      <Button
+                        variant="destructive"
+                        className="w-full transition-all duration-300 hover:scale-105 text-sm sm:text-base flex items-center justify-center mt-2"
+                        disabled={isDeletingCV}
+                        onClick={handleDeleteCV}
+                      >
+                        {isDeletingCV ? (
+                          <>
+                            <span className="w-4 h-4 mr-2 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></span>
+                            Deleting...
+                          </>
+                        ) : (
+                          "Delete CV"
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>

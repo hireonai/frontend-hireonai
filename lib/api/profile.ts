@@ -116,6 +116,43 @@ export async function uploadCVApi(file: File): Promise<UploadCVResponse> {
   }
 }
 
+export interface DeleteCVSuccessResponse {
+  statusCode: number;
+  success: true;
+  message: string;
+  data: null;
+}
+
+export interface DeleteCVErrorResponse {
+  statusCode: number;
+  success: false;
+  message: string;
+  error: string;
+}
+
+export type DeleteCVResponse = DeleteCVSuccessResponse | DeleteCVErrorResponse;
+
+export async function deleteCVApi(): Promise<DeleteCVResponse> {
+  try {
+    const res = await axiosInstance.delete("/profile/cv", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return {
+      statusCode: 500,
+      success: false,
+      message: "Internal Server Error.",
+      error: "Internal Server Error",
+    };
+  }
+}
+
 export interface UpdatedBookmarkJobs {
   updatedBookmarkJobs: [];
 }
